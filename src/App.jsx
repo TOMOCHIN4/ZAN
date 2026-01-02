@@ -580,8 +580,11 @@ const HomeScreen = ({ onStart, userStats }) => {
 
   return (
     <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+      {/* 最上部スペーサー - ヘッダーを少し下げる */}
+      <div className="flex-1 max-h-8" />
+
       {/* Header - flexboxで配置（shrink-0で潰れ防止） */}
-      <div className="shrink-0 px-6 py-6 flex justify-between items-center">
+      <div className="shrink-0 px-6 py-4 flex justify-between items-center">
         <button className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
           <Settings className="text-slate-400 w-5 h-5" />
         </button>
