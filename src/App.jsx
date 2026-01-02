@@ -659,11 +659,16 @@ const HomeScreen = ({ onStart, userStats }) => {
             {getLevelDesc(level)}
           </p>
         </div>
+      </div>
 
-        {/* Start Button - LVカードの直下に配置 */}
+      {/* Spacer - LVカードとボタンの中間に配置するためのスペース */}
+      <div className="flex-1 max-h-24" />
+
+      {/* Start Button - 中間位置に配置 */}
+      <div className="shrink-0 px-8 pb-10">
         <button
           onClick={() => onStart(level)}
-          className={`w-full mt-8 py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
+          className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
           style={{ boxShadow: '0 10px 40px rgba(20, 184, 166, 0.3)' }}
         >
           <Zap className="w-6 h-6" fill="currentColor" />
