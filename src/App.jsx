@@ -446,7 +446,7 @@ const SplashScreen = ({ onLogin }) => {
   return (
     <div
       onClick={handleTap}
-      className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer select-none"
+      className="flex-1 flex flex-col items-center justify-center p-10 md:p-12 relative overflow-hidden cursor-pointer select-none"
       style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 50%, #0f172a 100%)' }}
     >
       {/* Slash Lines - Decorative */}
@@ -534,8 +534,8 @@ const SplashScreen = ({ onLogin }) => {
         </p>
       </div>
 
-      {/* Tap to Start */}
-      <div className={`absolute bottom-16 md:bottom-20 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Tap to Start - 下部余白拡大 */}
+      <div className={`absolute bottom-20 md:bottom-24 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow">
           TAP TO START
         </p>
@@ -580,9 +580,9 @@ const HomeScreen = ({ onStart, userStats }) => {
 
   return (
     <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
-      {/* Minimal Header */}
-      <div className="px-6 py-5 md:px-8 md:py-6 flex justify-between items-center">
-        <button className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+      {/* Minimal Header - 上部余白追加 */}
+      <div className="px-6 py-6 md:px-8 md:py-8 flex justify-between items-center">
+        <button className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
           <Settings className="text-slate-400 w-5 h-5" />
         </button>
         <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
@@ -590,29 +590,29 @@ const HomeScreen = ({ onStart, userStats }) => {
         </h1>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-12">
-        {/* Today's Stats - Subtle */}
-        <div className="text-center mb-8">
-          <p className="text-slate-500 text-sm">
+      {/* Main Content - 左右余白拡大 */}
+      <div className="flex-1 flex flex-col justify-center px-8 md:px-12 lg:px-16">
+        {/* Today's Stats - 余白拡大 */}
+        <div className="text-center mb-10">
+          <p className="text-slate-500 text-sm leading-relaxed">
             今日: <span className="text-teal-400 font-bold">{userStats.todayCount}</span> 問正解
           </p>
         </div>
 
-        {/* Level Card - Main Focus */}
-        <div className={`relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-3xl p-8 md:p-12 border ${colors.border} backdrop-blur-sm`}>
-          {/* Level Number */}
-          <div className="text-center mb-8">
+        {/* Level Card - 内部余白拡大 */}
+        <div className={`relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-3xl p-10 md:p-14 border ${colors.border} backdrop-blur-sm`}>
+          {/* Level Number - 余白拡大 */}
+          <div className="text-center mb-10">
             <div className={`text-7xl md:text-8xl font-black bg-gradient-to-br ${colors.bg} bg-clip-text text-transparent leading-none`}>
               Lv.{level}
             </div>
-            <div className={`text-lg md:text-xl font-bold ${colors.text} mt-3 tracking-wider`}>
+            <div className={`text-lg md:text-xl font-bold ${colors.text} mt-4 tracking-wider`}>
               {getLevelLabel(level)}
             </div>
           </div>
 
-          {/* Left/Right Navigation */}
-          <div className="flex items-center justify-between mb-8">
+          {/* Left/Right Navigation - 余白拡大 */}
+          <div className="flex items-center justify-between mb-10">
             <button
               onClick={decreaseLevel}
               disabled={level <= 1}
@@ -625,8 +625,8 @@ const HomeScreen = ({ onStart, userStats }) => {
               <ChevronLeft className="w-7 h-7" />
             </button>
 
-            {/* Level Dots */}
-            <div className="flex gap-2">
+            {/* Level Dots - 間隔拡大 */}
+            <div className="flex gap-2.5">
               {[...Array(10)].map((_, i) => (
                 <div
                   key={i}
@@ -654,15 +654,15 @@ const HomeScreen = ({ onStart, userStats }) => {
             </button>
           </div>
 
-          {/* Description */}
-          <p className="text-sm md:text-base text-slate-400 text-center leading-relaxed">
+          {/* Description - 行間拡大 */}
+          <p className="text-sm md:text-base text-slate-400 text-center leading-loose">
             {getLevelDesc(level)}
           </p>
         </div>
       </div>
 
-      {/* Start Button - Fixed Bottom */}
-      <div className="p-6 md:p-10 pt-8">
+      {/* Start Button - 余白拡大 */}
+      <div className="p-8 md:p-12 pt-6">
         <button
           onClick={() => onStart(level)}
           className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
@@ -737,18 +737,18 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
     <div className={`flex-1 flex flex-col ${shake ? 'animate-shake' : ''}`} style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
-      {/* Compact Header */}
-      <div className="px-4 py-3 md:px-5 md:py-4 flex justify-between items-center">
-        <button onClick={onQuit} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center active:scale-95 transition-all hover:bg-white/10">
+      {/* Header - 余白拡大 */}
+      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center">
+        <button onClick={onQuit} className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center active:scale-95 transition-all hover:bg-white/10">
           <X className="w-5 h-5" />
         </button>
 
-        {/* Progress Diamonds */}
-        <div className="flex items-center gap-2">
+        {/* Progress Diamonds - 間隔拡大 */}
+        <div className="flex items-center gap-3">
           {[...Array(MAX_QUESTIONS)].map((_, i) => (
             <div
               key={i}
-              className={`w-3 h-3 rotate-45 transition-all duration-300 ${
+              className={`w-3.5 h-3.5 rotate-45 transition-all duration-300 ${
                 i < results.length
                   ? (results[i].isCorrect
                       ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50'
@@ -761,26 +761,26 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
           ))}
         </div>
 
-        <div className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-bold">
+        <div className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-bold">
           Lv.{level}
         </div>
       </div>
 
-      {/* Problem Display */}
-      <div className="flex-1 px-4 md:px-6 flex flex-col justify-center">
-        <div className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl border p-6 md:p-8 min-h-[140px] md:min-h-[180px] flex items-center justify-center transition-all duration-300
+      {/* Problem Display - 余白拡大 */}
+      <div className="flex-1 px-6 md:px-8 flex flex-col justify-center gap-8">
+        <div className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl border p-8 md:p-10 min-h-[160px] md:min-h-[200px] flex items-center justify-center transition-all duration-300
           ${feedback.status === 'correct' ? 'border-emerald-500/50 bg-emerald-900/30' :
             feedback.status === 'wrong' ? 'border-rose-500/50 bg-rose-900/30' :
             'border-slate-700/50'}`}>
-          <div className="font-bold flex items-center flex-wrap justify-center gap-2">
+          <div className="font-bold flex items-center flex-wrap justify-center gap-3">
             <MathRenderer node={problem.display} size="large" />
-            <span className="mx-2 md:mx-4 text-2xl md:text-3xl text-slate-500">=</span>
+            <span className="mx-3 md:mx-5 text-2xl md:text-3xl text-slate-500">=</span>
             <span className="text-3xl md:text-4xl text-teal-400 font-black">?</span>
           </div>
         </div>
 
-        {/* Feedback */}
-        <div className="mt-3 h-8 flex justify-center items-center">
+        {/* Feedback - 余白拡大 */}
+        <div className="h-8 flex justify-center items-center">
           {feedback.status === 'correct' && (
             <span className="text-emerald-400 font-bold text-lg md:text-xl animate-bounce flex items-center gap-2">
               <Check className="w-5 h-5" /> {feedback.msg}
@@ -792,23 +792,23 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
         </div>
       </div>
 
-      {/* Input Display */}
-      <div className="px-4 md:px-6 mb-3">
+      {/* Input Display - 余白拡大 */}
+      <div className="px-6 md:px-8 mb-4">
         <input
           type="text"
           readOnly
           value={input}
           placeholder="答えを入力"
-          className={`w-full h-14 md:h-16 text-2xl md:text-3xl font-mono text-center rounded-xl border-2 outline-none transition-all duration-200
+          className={`w-full h-16 md:h-18 text-2xl md:text-3xl font-mono text-center rounded-xl border-2 outline-none transition-all duration-200
             ${feedback.status === 'correct' ? 'border-emerald-500 bg-emerald-900/30 text-emerald-400' :
               feedback.status === 'wrong' ? 'border-rose-500 bg-rose-900/30 text-rose-400' :
               'border-teal-500/50 bg-slate-800/50 text-white placeholder-slate-500'}`}
         />
       </div>
 
-      {/* Keypad */}
-      <div className="bg-slate-900/80 backdrop-blur-sm p-4 md:p-5 pt-5 md:pt-6 rounded-t-2xl border-t border-slate-700/50">
-        <div className="grid grid-cols-4 gap-2 md:gap-3 max-w-md mx-auto">
+      {/* Keypad - 余白拡大 */}
+      <div className="bg-slate-900/80 backdrop-blur-sm p-5 md:p-6 pt-6 md:pt-7 rounded-t-2xl border-t border-slate-700/50">
+        <div className="grid grid-cols-4 gap-2.5 md:gap-3 max-w-md mx-auto">
           {['7','8','9'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
           <KeyBtn char="DEL" type="del" onClick={handleInput} />
           {['4','5','6'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
@@ -820,7 +820,7 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
           <KeyBtn char="-" onClick={handleInput} />
           <KeyBtn char="判定" type="enter" onClick={handleInput} />
         </div>
-        <div className="h-6 md:h-8" /> {/* Safe area spacer */}
+        <div className="h-8 md:h-10" /> {/* Safe area spacer - 拡大 */}
       </div>
 
       <style>{`
@@ -864,7 +864,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center px-8 py-8 md:px-10 md:py-10 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="flex-1 flex flex-col items-center px-8 pt-16 pb-10 md:px-12 md:pt-20 md:pb-12 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
       {/* Background Slash Pattern */}
@@ -900,48 +900,51 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       )}
 
-      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-8 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+      {/* Title - 余白拡大 */}
+      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-10 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
         結果発表
       </h2>
 
-      {/* Rank Badge */}
-      <div className={`mb-8 flex flex-col items-center px-12 py-8 md:px-16 md:py-10 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+      {/* Rank Badge - 余白拡大 */}
+      <div className={`mb-10 flex flex-col items-center px-14 py-10 md:px-18 md:py-12 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
         <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}>
           {rank}
         </span>
-        <span className="text-sm font-bold text-slate-500 mt-3 tracking-widest">RANK</span>
+        <span className="text-sm font-bold text-slate-500 mt-4 tracking-widest">RANK</span>
       </div>
 
-      {/* Score */}
-      <div className={`text-center mb-8 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      {/* Score - 余白拡大 */}
+      <div className={`text-center mb-10 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="text-5xl md:text-6xl font-black text-white">
           {score}<span className="text-xl font-normal text-slate-500 ml-1">点</span>
         </div>
-        <div className="text-slate-400 text-base mt-3 flex items-center justify-center gap-2">
+        <div className="text-slate-400 text-base mt-4 flex items-center justify-center gap-2">
           <Check className="w-4 h-4 text-emerald-400" />
           {correctCount} / {results.length} 正解
         </div>
       </div>
 
-      {/* Results List */}
-      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-5 mb-8 max-h-48 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-        {results.map((r, i) => (
-          <div key={i} className="flex justify-between items-center py-3.5 border-b border-slate-700/50 last:border-0">
-            <div className="flex items-center gap-4 overflow-hidden">
-              <div className={`w-7 h-7 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
-                <div className="-rotate-45">
-                  {r.isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
+      {/* Results List - 行間・余白拡大 */}
+      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 mb-10 max-h-52 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="space-y-4">
+          {results.map((r, i) => (
+            <div key={i} className="flex justify-between items-center py-4 border-b border-slate-700/50 last:border-0">
+              <div className="flex items-center gap-4 overflow-hidden">
+                <div className={`w-8 h-8 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
+                  <div className="-rotate-45">
+                    {r.isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
+                  </div>
                 </div>
+                <div className="text-sm leading-relaxed"><MathRenderer node={r.display} /></div>
               </div>
-              <div className="text-sm"><MathRenderer node={r.display} /></div>
+              {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-2 rounded-lg shrink-0 ml-4 font-medium border border-rose-500/30">{r.correctAns}</span>}
             </div>
-            {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-1.5 rounded-lg shrink-0 ml-3 font-medium border border-rose-500/30">{r.correctAns}</span>}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className={`w-full space-y-4 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      {/* Action Buttons - 余白拡大 */}
+      <div className={`w-full space-y-5 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <button
           onClick={onRetry}
           className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-3"
