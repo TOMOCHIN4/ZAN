@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Trophy, BarChart2, Settings, X, Play, RotateCcw, Home, User, Check } from 'lucide-react';
+import { Trophy, BarChart2, Settings, X, Play, RotateCcw, Home, User, Check, Zap, Target } from 'lucide-react';
 
 // --- 1. Math Engine V5: 定番数字対応 ---
 const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
@@ -341,36 +341,39 @@ const generateProblem = (level) => {
 };
 
 // --- 2. Math Renderer ---
-const MathRenderer = ({ node }) => {
+const MathRenderer = ({ node, size = 'normal' }) => {
   if (!node) return null;
 
+  const textSize = size === 'large' ? 'text-xl md:text-2xl' : 'text-base md:text-lg';
+  const fracSize = size === 'large' ? 'text-base md:text-lg' : 'text-sm md:text-base';
+
   if (node.type === 'integer' || node.type === 'decimal') {
-    return <span className="mx-0.5 text-gray-800">{node.value}</span>;
+    return <span className={`mx-0.5 md:mx-1 ${textSize} font-semibold text-slate-800`}>{node.value}</span>;
   }
   if (node.type === 'fraction') {
     return (
-      <span className="inline-flex flex-col items-center mx-1 align-middle">
-        <span className="text-sm leading-tight px-0.5 text-gray-800">{node.num}</span>
-        <span className="w-full h-0.5 bg-gray-700 my-px"></span>
-        <span className="text-sm leading-tight px-0.5 text-gray-800">{node.den}</span>
+      <span className="inline-flex flex-col items-center mx-1 md:mx-2 align-middle">
+        <span className={`${fracSize} leading-tight px-1 text-slate-800 font-medium`}>{node.num}</span>
+        <span className="w-full h-[2px] bg-slate-600 my-0.5"></span>
+        <span className={`${fracSize} leading-tight px-1 text-slate-800 font-medium`}>{node.den}</span>
       </span>
     );
   }
   if (node.type === 'paren') {
     return (
       <span className="inline-flex items-center">
-        <span className="text-xl text-gray-400 font-light mx-0.5">(</span>
-        <MathRenderer node={node.content} />
-        <span className="text-xl text-gray-400 font-light mx-0.5">)</span>
+        <span className={`${textSize} text-slate-400 font-light mx-0.5`}>(</span>
+        <MathRenderer node={node.content} size={size} />
+        <span className={`${textSize} text-slate-400 font-light mx-0.5`}>)</span>
       </span>
     );
   }
   if (node.type === 'expr') {
     return (
       <span className="inline-flex items-center flex-wrap justify-center">
-        <MathRenderer node={node.left} />
-        <span className="mx-1 text-lg text-gray-700">{node.op}</span>
-        <MathRenderer node={node.right} />
+        <MathRenderer node={node.left} size={size} />
+        <span className={`mx-1 md:mx-2 ${textSize} text-teal-600 font-bold`}>{node.op}</span>
+        <MathRenderer node={node.right} size={size} />
       </span>
     );
   }
@@ -382,62 +385,127 @@ const Confetti = ({ active }) => {
   if (!active) return null;
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {[...Array(60)].map((_, i) => (
+      {[...Array(80)].map((_, i) => (
         <div key={i} className="absolute animate-fall" style={{
           left: `${Math.random() * 100}%`, top: '-20px',
-          animationDelay: `${Math.random() * 0.5}s`, animationDuration: `${1 + Math.random()}s`
+          animationDelay: `${Math.random() * 0.8}s`, animationDuration: `${1.5 + Math.random()}s`
         }}>
-          <div className="w-3 h-3 rotate-45" style={{
-            backgroundColor: ['#4ECDC4', '#FF8A80', '#FFA726', '#4CAF50', '#FFD700'][Math.floor(Math.random() * 5)]
+          <div className="w-2 h-2 md:w-3 md:h-3 rotate-45" style={{
+            backgroundColor: ['#14b8a6', '#f43f5e', '#f59e0b', '#22c55e', '#eab308', '#8b5cf6'][Math.floor(Math.random() * 6)]
           }} />
         </div>
       ))}
-      <style>{`@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } } .animate-fall { animation: fall 1.5s ease-out forwards; }`}</style>
+      <style>{`@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } } .animate-fall { animation: fall 2s ease-out forwards; }`}</style>
     </div>
   );
 };
 
-const KeyBtn = ({ char, onClick, type = 'default' }) => {
-  let bg = "bg-white hover:bg-slate-50", text = "text-slate-700";
-  if (type === 'del') { bg = "bg-pink-100 hover:bg-pink-200"; text = "text-red-700"; }
-  else if (type === 'clr') { bg = "bg-red-400 hover:bg-red-500"; text = "text-white"; }
-  else if (type === 'op') { bg = "bg-teal-400 hover:bg-teal-500"; text = "text-white"; }
-  else if (type === 'enter') { bg = "bg-green-500 hover:bg-green-600"; text = "text-white"; }
+const KeyBtn = ({ char, onClick, type = 'default', className = '' }) => {
+  const baseStyles = "font-bold rounded-xl shadow-sm flex items-center justify-center transition-all duration-150 active:scale-95 select-none";
+  const sizeStyles = "h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl";
+
+  let colorStyles = "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200";
+  if (type === 'del') colorStyles = "bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200";
+  else if (type === 'clr') colorStyles = "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/25";
+  else if (type === 'op') colorStyles = "bg-teal-500 hover:bg-teal-600 text-white shadow-teal-500/25";
+  else if (type === 'enter') colorStyles = "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg shadow-emerald-500/30";
+
   return (
-    <button onClick={() => onClick(char)}
-      className={`${bg} ${text} text-xl font-bold rounded-lg shadow-sm h-14 flex items-center justify-center transition-all active:scale-95`}>
-      {char === 'DEL' ? <RotateCcw size={20} /> : char}
+    <button onClick={() => onClick(char)} className={`${baseStyles} ${sizeStyles} ${colorStyles} ${className}`}>
+      {char === 'DEL' ? <RotateCcw className="w-5 h-5 md:w-6 md:h-6" /> : char}
     </button>
   );
 };
 
-// --- 4. Screens ---
-const SplashScreen = ({ onLogin }) => (
-  <div className="h-full flex flex-col items-center justify-center bg-white p-6 relative overflow-hidden">
-    <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#4ECDC4_1px,transparent_1px)] bg-[length:20px_20px]" />
-    <div className="mb-12 text-center animate-fade-in">
-      <div className="text-9xl font-black text-teal-400 tracking-tighter" style={{ fontFamily: 'serif' }}>Z</div>
-      <h1 className="text-4xl font-bold text-slate-800 -mt-4">Zan<span className="text-sm font-normal ml-2 text-slate-500">斬</span></h1>
-      <p className="mt-4 text-slate-500 text-sm tracking-widest">難問を、斬る。</p>
+// --- 4. App Shell ---
+const AppShell = ({ children }) => (
+  <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 via-slate-50 to-teal-50 flex items-center justify-center p-0 md:p-4 lg:p-8">
+    <div className="w-full max-w-lg lg:max-w-xl min-h-screen md:min-h-0 md:h-auto md:max-h-[900px] md:rounded-3xl bg-white md:shadow-2xl md:shadow-slate-300/50 overflow-hidden relative flex flex-col">
+      {children}
     </div>
-    <div className="w-full max-w-xs z-10">
-      <button onClick={onLogin} className="w-full py-4 rounded-full bg-teal-400 text-white font-bold shadow-lg shadow-teal-400/30 active:scale-98 transition-transform">
-        はじめる
-      </button>
-    </div>
-    <style>{`.animate-fade-in { animation: fadeIn 0.8s ease-out; } @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }`}</style>
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+      * { font-family: 'Noto Sans JP', sans-serif; }
+    `}</style>
   </div>
 );
+
+// --- 5. Screens ---
+const SplashScreen = ({ onLogin }) => {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-white via-teal-50/30 to-slate-50 p-8 relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2314b8a6' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      }} />
+
+      {/* Floating elements */}
+      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-teal-400/10 animate-float-slow" />
+      <div className="absolute bottom-32 right-8 w-16 h-16 rounded-full bg-amber-400/10 animate-float-medium" />
+      <div className="absolute top-40 right-16 w-12 h-12 rounded-full bg-rose-400/10 animate-float-fast" />
+
+      {/* Logo */}
+      <div className={`text-center transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="relative inline-block mb-6">
+          <div className="text-[140px] md:text-[180px] font-black text-transparent bg-clip-text bg-gradient-to-br from-teal-400 via-teal-500 to-emerald-600 leading-none tracking-tighter"
+               style={{ fontFamily: 'Georgia, serif', textShadow: '0 4px 30px rgba(20, 184, 166, 0.3)' }}>
+            Z
+          </div>
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full" />
+        </div>
+
+        <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight">
+          Zan
+          <span className="text-lg md:text-xl font-normal text-slate-400 ml-3 tracking-widest">斬</span>
+        </h1>
+
+        <p className="mt-6 text-slate-500 text-sm md:text-base tracking-[0.3em] font-medium">
+          難問を、斬る。
+        </p>
+      </div>
+
+      {/* CTA Button */}
+      <div className={`w-full max-w-xs mt-16 transition-all duration-700 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <button
+          onClick={onLogin}
+          className="w-full py-4 md:py-5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-lg font-bold shadow-xl shadow-teal-500/30 hover:shadow-2xl hover:shadow-teal-500/40 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3"
+        >
+          <Play fill="currentColor" className="w-5 h-5" />
+          はじめる
+        </button>
+      </div>
+
+      <style>{`
+        @keyframes float-slow { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(5deg); } }
+        @keyframes float-medium { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-15px) rotate(-5deg); } }
+        @keyframes float-fast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+      `}</style>
+    </div>
+  );
+};
 
 const HomeScreen = ({ onStart, userStats }) => {
   const [level, setLevel] = useState(5);
   const getLevelLabel = (l) => ["基礎","基礎","標準","標準","応用","応用","難関","難関","魔界","魔界"][l-1] || "魔界";
   const getLevelColor = (l) => {
-    if (l <= 2) return "bg-emerald-100 text-emerald-700";
-    if (l <= 4) return "bg-blue-100 text-blue-700";
-    if (l <= 6) return "bg-amber-100 text-amber-700";
-    if (l <= 8) return "bg-red-100 text-red-700";
-    return "bg-purple-100 text-purple-700";
+    if (l <= 2) return "from-emerald-400 to-green-500";
+    if (l <= 4) return "from-sky-400 to-blue-500";
+    if (l <= 6) return "from-amber-400 to-orange-500";
+    if (l <= 8) return "from-rose-400 to-red-500";
+    return "from-purple-400 to-violet-600";
+  };
+  const getLevelBadge = (l) => {
+    if (l <= 2) return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    if (l <= 4) return "bg-sky-100 text-sky-700 border-sky-200";
+    if (l <= 6) return "bg-amber-100 text-amber-700 border-amber-200";
+    if (l <= 8) return "bg-rose-100 text-rose-700 border-rose-200";
+    return "bg-purple-100 text-purple-700 border-purple-200";
   };
   const getLevelDesc = (l) => {
     if (l <= 2) return "分数・小数が混ざる基本問題";
@@ -448,47 +516,100 @@ const HomeScreen = ({ onStart, userStats }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-50">
-      <div className="p-5 flex justify-between items-center bg-white shadow-sm">
-        <Settings className="text-slate-400" size={22} />
-        <h1 className="text-lg font-bold text-teal-500">Zan</h1>
-        <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center">
-          <User size={18} className="text-slate-500" />
-        </div>
-      </div>
-      <div className="p-5 flex-1 overflow-y-auto">
-        <div className="bg-white p-5 rounded-2xl shadow-sm mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-bold text-slate-500">今日の正解数</span>
-          </div>
-          <div className="text-3xl font-black text-slate-800 mb-2">{userStats.todayCount}<span className="text-base font-normal text-slate-400 ml-1">問</span></div>
-          <div className="w-full bg-slate-100 rounded-full h-2">
-            <div className="bg-teal-400 h-2 rounded-full transition-all" style={{ width: `${Math.min(100, userStats.todayCount * 5)}%` }} />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-sm mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-3xl font-black text-teal-500">Lv.{level}</span>
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${getLevelColor(level)}`}>{getLevelLabel(level)}</span>
-          </div>
-          <input type="range" min="1" max="10" value={level} onChange={(e) => setLevel(parseInt(e.target.value))}
-            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-400" />
-          <div className="flex justify-between text-xs text-slate-400 mt-1 font-mono">
-            <span>1</span><span>5</span><span>10</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-3 text-center leading-relaxed">{getLevelDesc(level)}</p>
-        </div>
-
-        <button onClick={() => onStart(level)}
-          className="w-full py-5 rounded-2xl bg-teal-400 text-white text-xl font-bold shadow-lg shadow-teal-400/40 flex items-center justify-center gap-3 active:scale-98 transition-transform">
-          <Play fill="currentColor" size={24} /> スタート
+    <div className="flex-1 flex flex-col bg-slate-50">
+      {/* Header */}
+      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center bg-white border-b border-slate-100">
+        <button className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
+          <Settings className="text-slate-500 w-5 h-5" />
+        </button>
+        <h1 className="text-xl font-black bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">Zan</h1>
+        <button className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+          <User className="text-slate-500 w-5 h-5" />
         </button>
       </div>
-      <div className="bg-white border-t border-slate-100 p-3 flex justify-around">
-        <div className="flex flex-col items-center text-teal-500"><Home size={22} /><span className="text-[10px] font-bold mt-0.5">ホーム</span></div>
-        <div className="flex flex-col items-center text-slate-300"><BarChart2 size={22} /><span className="text-[10px] font-bold mt-0.5">統計</span></div>
-        <div className="flex flex-col items-center text-slate-300"><Trophy size={22} /><span className="text-[10px] font-bold mt-0.5">実績</span></div>
+
+      {/* Content */}
+      <div className="flex-1 p-5 md:p-6 overflow-y-auto space-y-5">
+        {/* Today's Progress */}
+        <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <Target className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-sm font-bold text-slate-600">今日の正解数</span>
+          </div>
+          <div className="flex items-end gap-2 mb-3">
+            <span className="text-5xl md:text-6xl font-black text-slate-800">{userStats.todayCount}</span>
+            <span className="text-lg font-medium text-slate-400 mb-2">問</span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500 ease-out"
+                 style={{ width: `${Math.min(100, userStats.todayCount * 5)}%` }} />
+          </div>
+          <p className="text-xs text-slate-400 mt-2">目標: 20問</p>
+        </div>
+
+        {/* Level Selector */}
+        <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div className="flex justify-between items-start mb-5">
+            <div>
+              <div className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${getLevelColor(level)} bg-clip-text text-transparent`}>
+                Lv.{level}
+              </div>
+            </div>
+            <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${getLevelBadge(level)}`}>
+              {getLevelLabel(level)}
+            </span>
+          </div>
+
+          {/* Custom Slider */}
+          <div className="relative mb-4">
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={level}
+              onChange={(e) => setLevel(parseInt(e.target.value))}
+              className="w-full h-3 bg-slate-200 rounded-full appearance-none cursor-pointer relative z-10"
+              style={{
+                background: `linear-gradient(to right, #14b8a6 0%, #14b8a6 ${(level - 1) * 11.1}%, #e2e8f0 ${(level - 1) * 11.1}%, #e2e8f0 100%)`
+              }}
+            />
+          </div>
+
+          <div className="flex justify-between text-xs text-slate-400 font-mono mb-4">
+            <span>1</span>
+            <span>5</span>
+            <span>10</span>
+          </div>
+
+          <p className="text-sm text-slate-500 text-center bg-slate-50 rounded-xl py-3 px-4">{getLevelDesc(level)}</p>
+        </div>
+
+        {/* Start Button */}
+        <button
+          onClick={() => onStart(level)}
+          className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-xl font-bold shadow-xl shadow-teal-500/30 flex items-center justify-center gap-3 active:scale-[0.98] transition-all hover:shadow-2xl hover:shadow-teal-500/40"
+        >
+          <Zap className="w-6 h-6" fill="currentColor" />
+          スタート
+        </button>
+      </div>
+
+      {/* Bottom Nav */}
+      <div className="bg-white border-t border-slate-100 px-6 py-3 md:py-4 flex justify-around">
+        <button className="flex flex-col items-center gap-1 text-teal-500">
+          <Home className="w-6 h-6" />
+          <span className="text-[10px] font-bold">ホーム</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-slate-300 hover:text-slate-400 transition-colors">
+          <BarChart2 className="w-6 h-6" />
+          <span className="text-[10px] font-bold">統計</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-slate-300 hover:text-slate-400 transition-colors">
+          <Trophy className="w-6 h-6" />
+          <span className="text-[10px] font-bold">実績</span>
+        </button>
       </div>
     </div>
   );
@@ -524,7 +645,7 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
     const userVal = parseFraction(input);
     const isCorrect = userVal && userVal.equals(problem.answer);
     if (isCorrect) {
-      setFeedback({ status: 'correct', msg: '正解！🎉' });
+      setFeedback({ status: 'correct', msg: '正解！' });
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 1500);
     } else {
@@ -533,7 +654,7 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
       if (ans.den !== 1 && ans.isTerminatingDecimal()) {
         ansStr = `${ans.toFloat()} (=${ans.toString()})`;
       }
-      setFeedback({ status: 'wrong', msg: `残念… 正解: ${ansStr}` });
+      setFeedback({ status: 'wrong', msg: `正解: ${ansStr}` });
       setShake(true);
       setTimeout(() => setShake(false), 500);
     }
@@ -545,41 +666,86 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
     }, isCorrect ? 1200 : 2500);
   };
 
-  if (!problem) return <div className="h-full flex items-center justify-center bg-slate-50"><div className="animate-spin w-8 h-8 border-4 border-teal-400 border-t-transparent rounded-full"></div></div>;
+  if (!problem) return (
+    <div className="flex-1 flex items-center justify-center bg-slate-50">
+      <div className="animate-spin w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full"></div>
+    </div>
+  );
 
   return (
-    <div className={`h-full flex flex-col bg-slate-50 ${shake ? 'animate-shake' : ''}`}>
+    <div className={`flex-1 flex flex-col bg-slate-50 ${shake ? 'animate-shake' : ''}`}>
       <Confetti active={showConfetti} />
-      <div className="p-4 flex justify-between items-center">
-        <button onClick={onQuit} className="p-2 rounded-full bg-slate-200 text-slate-500 active:scale-95"><X size={20} /></button>
-        <div className="flex items-center gap-2">
+
+      {/* Header */}
+      <div className="p-4 md:p-5 flex justify-between items-center">
+        <button onClick={onQuit} className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white border border-slate-200 text-slate-500 flex items-center justify-center active:scale-95 transition-transform shadow-sm">
+          <X className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+
+        {/* Progress Dots */}
+        <div className="flex items-center gap-2 md:gap-3">
           {[...Array(MAX_QUESTIONS)].map((_, i) => (
-            <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all ${i < results.length ? (results[i].isCorrect ? 'bg-green-400' : 'bg-red-400') : i === results.length ? 'bg-teal-400 scale-125' : 'bg-slate-200'}`} />
+            <div
+              key={i}
+              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
+                i < results.length
+                  ? (results[i].isCorrect ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 'bg-rose-400 shadow-lg shadow-rose-400/50')
+                  : i === results.length
+                    ? 'bg-teal-400 scale-125 shadow-lg shadow-teal-400/50'
+                    : 'bg-slate-200'
+              }`}
+            />
           ))}
         </div>
-        <div className="bg-teal-400 text-white px-2.5 py-1 rounded-lg text-xs font-bold">Lv.{level}</div>
+
+        <div className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/20">
+          Lv.{level}
+        </div>
       </div>
-      <div className="flex-1 px-4 flex flex-col justify-center">
-        <div className={`bg-white rounded-3xl shadow-sm border-2 p-5 min-h-36 flex items-center justify-center transition-all
-          ${feedback.status === 'correct' ? 'border-green-400 bg-green-50' : feedback.status === 'wrong' ? 'border-red-400 bg-red-50' : 'border-slate-100'}`}>
-          <div className="text-lg font-bold flex items-center flex-wrap justify-center gap-1">
-            <MathRenderer node={problem.display} />
-            <span className="mx-2 text-xl text-gray-600">=</span>
-            <span className="text-2xl text-teal-500 font-black">?</span>
+
+      {/* Problem Display */}
+      <div className="flex-1 px-4 md:px-6 flex flex-col justify-center">
+        <div className={`bg-white rounded-3xl shadow-lg border-2 p-6 md:p-8 min-h-[160px] md:min-h-[200px] flex items-center justify-center transition-all duration-300
+          ${feedback.status === 'correct' ? 'border-emerald-400 bg-emerald-50 shadow-emerald-100' :
+            feedback.status === 'wrong' ? 'border-rose-400 bg-rose-50 shadow-rose-100' :
+            'border-slate-100 shadow-slate-100'}`}>
+          <div className="font-bold flex items-center flex-wrap justify-center gap-2">
+            <MathRenderer node={problem.display} size="large" />
+            <span className="mx-2 md:mx-4 text-2xl md:text-3xl text-slate-400">=</span>
+            <span className="text-3xl md:text-4xl text-teal-500 font-black">?</span>
           </div>
         </div>
-        <div className="mt-3 h-7 flex justify-center items-center">
-          {feedback.status === 'correct' && <span className="text-green-500 font-bold text-base animate-bounce">{feedback.msg}</span>}
-          {feedback.status === 'wrong' && <span className="text-red-500 font-bold text-sm">{feedback.msg}</span>}
+
+        {/* Feedback */}
+        <div className="mt-4 h-8 flex justify-center items-center">
+          {feedback.status === 'correct' && (
+            <span className="text-emerald-500 font-bold text-lg md:text-xl animate-bounce flex items-center gap-2">
+              <Check className="w-5 h-5" /> {feedback.msg}
+            </span>
+          )}
+          {feedback.status === 'wrong' && (
+            <span className="text-rose-500 font-bold text-sm md:text-base">{feedback.msg}</span>
+          )}
         </div>
       </div>
-      <div className="px-4 mb-3">
-        <input type="text" readOnly value={input} placeholder="答えを入力（例: 7 または 1/2 または 0.5）"
-          className={`w-full h-14 text-2xl font-mono text-center rounded-xl border-2 outline-none bg-white transition-colors
-            ${feedback.status === 'correct' ? 'border-green-500 text-green-600' : feedback.status === 'wrong' ? 'border-red-500 text-red-600' : 'border-teal-400 text-slate-700'}`} />
+
+      {/* Input Display */}
+      <div className="px-4 md:px-6 mb-3">
+        <input
+          type="text"
+          readOnly
+          value={input}
+          placeholder="答えを入力"
+          className={`w-full h-14 md:h-16 text-2xl md:text-3xl font-mono text-center rounded-2xl border-2 outline-none bg-white transition-all duration-200
+            ${feedback.status === 'correct' ? 'border-emerald-500 text-emerald-600' :
+              feedback.status === 'wrong' ? 'border-rose-500 text-rose-600' :
+              'border-teal-400 text-slate-700 focus:shadow-lg focus:shadow-teal-500/10'}`}
+        />
       </div>
-      <div className="bg-white p-3 pb-6 rounded-t-3xl shadow-lg">
-        <div className="grid grid-cols-4 gap-2 max-w-sm mx-auto">
+
+      {/* Keypad */}
+      <div className="bg-white p-4 md:p-5 pt-5 md:pt-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] border-t border-slate-100">
+        <div className="grid grid-cols-4 gap-2 md:gap-3 max-w-md mx-auto">
           {['7','8','9'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
           <KeyBtn char="DEL" type="del" onClick={handleInput} />
           {['4','5','6'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
@@ -591,8 +757,13 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
           <KeyBtn char="-" onClick={handleInput} />
           <KeyBtn char="判定" type="enter" onClick={handleInput} />
         </div>
+        <div className="h-6 md:h-8" /> {/* Safe area spacer */}
       </div>
-      <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} } .animate-shake{animation:shake 0.4s ease-in-out}`}</style>
+
+      <style>{`
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+      `}</style>
     </div>
   );
 };
@@ -601,40 +772,77 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   const correctCount = results.filter(r => r.isCorrect).length;
   const score = Math.round((correctCount / results.length) * 100);
   const [showConfetti, setShowConfetti] = useState(false);
-  let rank = 'C', rankColor = 'text-slate-400', rankBg = 'bg-slate-100';
-  if (score === 100) { rank = 'S'; rankColor = 'text-yellow-500'; rankBg = 'bg-gradient-to-br from-yellow-50 to-amber-100'; }
-  else if (score >= 80) { rank = 'A'; rankColor = 'text-sky-500'; rankBg = 'bg-sky-50'; }
-  else if (score >= 60) { rank = 'B'; rankColor = 'text-orange-500'; rankBg = 'bg-orange-50'; }
-  useEffect(() => { if (score === 100) setShowConfetti(true); }, [score]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 100);
+    if (score === 100) setShowConfetti(true);
+  }, [score]);
+
+  let rank = 'C', rankGradient = 'from-slate-300 to-slate-400', rankBg = 'bg-slate-100';
+  if (score === 100) { rank = 'S'; rankGradient = 'from-amber-400 via-yellow-400 to-amber-500'; rankBg = 'bg-gradient-to-br from-amber-50 to-yellow-50'; }
+  else if (score >= 80) { rank = 'A'; rankGradient = 'from-sky-400 to-blue-500'; rankBg = 'bg-sky-50'; }
+  else if (score >= 60) { rank = 'B'; rankGradient = 'from-orange-400 to-amber-500'; rankBg = 'bg-orange-50'; }
 
   return (
-    <div className="h-full bg-white flex flex-col items-center p-5 pt-8">
+    <div className="flex-1 bg-white flex flex-col items-center p-6 md:p-8 overflow-y-auto">
       <Confetti active={showConfetti} />
-      <h2 className="text-lg font-bold text-slate-700 mb-4">結果発表</h2>
-      <div className={`mb-5 flex flex-col items-center p-6 rounded-3xl ${rankBg} animate-bounce-in shadow-sm`}>
-        <span className={`text-6xl font-black leading-none ${rankColor}`}>{rank}</span>
-        <span className="text-sm font-bold text-slate-400 mt-1">RANK</span>
+
+      <h2 className={`text-xl md:text-2xl font-black text-slate-700 mb-6 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+        結果発表
+      </h2>
+
+      {/* Rank Badge */}
+      <div className={`mb-6 flex flex-col items-center p-8 md:p-10 rounded-3xl ${rankBg} shadow-lg transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+        <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}
+              style={{ textShadow: score === 100 ? '0 4px 20px rgba(251, 191, 36, 0.3)' : 'none' }}>
+          {rank}
+        </span>
+        <span className="text-sm font-bold text-slate-400 mt-2 tracking-widest">RANK</span>
       </div>
-      <div className="text-center mb-5">
-        <div className="text-4xl font-black text-slate-800">{score}<span className="text-base font-normal ml-1">点</span></div>
-        <div className="text-slate-500 text-sm mt-1">{correctCount} / {results.length} 正解</div>
+
+      {/* Score */}
+      <div className={`text-center mb-6 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className="text-5xl md:text-6xl font-black text-slate-800">
+          {score}<span className="text-xl font-normal text-slate-400 ml-1">点</span>
+        </div>
+        <div className="text-slate-500 text-base mt-2 flex items-center justify-center gap-2">
+          <Check className="w-4 h-4 text-emerald-500" />
+          {correctCount} / {results.length} 正解
+        </div>
       </div>
-      <div className="w-full bg-slate-50 rounded-xl p-3 mb-5 max-h-40 overflow-y-auto">
+
+      {/* Results List */}
+      <div className={`w-full bg-slate-50 rounded-2xl p-4 mb-6 max-h-48 overflow-y-auto transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         {results.map((r, i) => (
-          <div key={i} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-            <div className="flex items-center gap-2 overflow-hidden">
-              {r.isCorrect ? <Check size={16} className="text-green-500 shrink-0" /> : <X size={16} className="text-red-500 shrink-0" />}
-              <div className="text-xs scale-90 origin-left"><MathRenderer node={r.display} /></div>
+          <div key={i} className="flex justify-between items-center py-3 border-b border-slate-100 last:border-0">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${r.isCorrect ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                {r.isCorrect ? <Check className="w-4 h-4 text-emerald-500" /> : <X className="w-4 h-4 text-rose-500" />}
+              </div>
+              <div className="text-sm"><MathRenderer node={r.display} /></div>
             </div>
-            {!r.isCorrect && <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded shrink-0 ml-2">{r.correctAns}</span>}
+            {!r.isCorrect && <span className="text-xs text-rose-600 bg-rose-100 px-3 py-1 rounded-lg shrink-0 ml-2 font-medium">{r.correctAns}</span>}
           </div>
         ))}
       </div>
-      <div className="w-full space-y-2 mt-auto mb-3">
-        <button onClick={onRetry} className="w-full py-4 rounded-xl bg-teal-400 text-white font-bold shadow-lg active:scale-98 transition-transform">もう一度挑戦</button>
-        <button onClick={onHome} className="w-full py-4 rounded-xl bg-slate-200 text-slate-600 font-bold active:scale-98 transition-transform">ホームへ戻る</button>
+
+      {/* Action Buttons */}
+      <div className={`w-full space-y-3 mt-auto transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <button
+          onClick={onRetry}
+          className="w-full py-4 md:py-5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
+        >
+          <RotateCcw className="w-5 h-5" />
+          もう一度挑戦
+        </button>
+        <button
+          onClick={onHome}
+          className="w-full py-4 md:py-5 rounded-2xl bg-slate-100 text-slate-600 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-200"
+        >
+          ホームへ戻る
+        </button>
       </div>
-      <style>{`.animate-bounce-in{animation:bounceIn 0.6s cubic-bezier(0.68,-0.55,0.265,1.55)}@keyframes bounceIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}`}</style>
     </div>
   );
 };
@@ -655,11 +863,11 @@ export default function App() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto h-screen bg-slate-100 shadow-2xl overflow-hidden relative font-sans text-slate-800">
+    <AppShell>
       {screen === 'splash' && <SplashScreen onLogin={goHome} />}
       {screen === 'home' && <HomeScreen onStart={startDrill} userStats={userStats} />}
       {screen === 'drill' && <DrillScreen level={currentLevel} onFinishSet={finishSet} onQuit={goHome} />}
       {screen === 'result' && <ResultScreen results={lastResults} onHome={goHome} onRetry={() => startDrill(currentLevel)} />}
-    </div>
+    </AppShell>
   );
 }
