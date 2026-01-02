@@ -581,8 +581,8 @@ const HomeScreen = ({ onStart, userStats }) => {
   return (
     <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       {/* Minimal Header */}
-      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center">
-        <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+      <div className="px-6 py-5 md:px-8 md:py-6 flex justify-between items-center">
+        <button className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
           <Settings className="text-slate-400 w-5 h-5" />
         </button>
         <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
@@ -591,28 +591,28 @@ const HomeScreen = ({ onStart, userStats }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-8">
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-12">
         {/* Today's Stats - Subtle */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-8">
           <p className="text-slate-500 text-sm">
             今日: <span className="text-teal-400 font-bold">{userStats.todayCount}</span> 問正解
           </p>
         </div>
 
         {/* Level Card - Main Focus */}
-        <div className={`relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-3xl p-8 md:p-10 border ${colors.border} backdrop-blur-sm`}>
+        <div className={`relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-3xl p-8 md:p-12 border ${colors.border} backdrop-blur-sm`}>
           {/* Level Number */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-8">
             <div className={`text-7xl md:text-8xl font-black bg-gradient-to-br ${colors.bg} bg-clip-text text-transparent leading-none`}>
               Lv.{level}
             </div>
-            <div className={`text-lg md:text-xl font-bold ${colors.text} mt-2 tracking-wider`}>
+            <div className={`text-lg md:text-xl font-bold ${colors.text} mt-3 tracking-wider`}>
               {getLevelLabel(level)}
             </div>
           </div>
 
           {/* Left/Right Navigation */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             <button
               onClick={decreaseLevel}
               disabled={level <= 1}
@@ -626,11 +626,11 @@ const HomeScreen = ({ onStart, userStats }) => {
             </button>
 
             {/* Level Dots */}
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               {[...Array(10)].map((_, i) => (
                 <div
                   key={i}
-                  className={`w-2 h-2 rounded-full transition-all ${
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
                     i + 1 === level
                       ? `bg-gradient-to-br ${colors.bg} scale-125`
                       : i + 1 < level
@@ -655,14 +655,14 @@ const HomeScreen = ({ onStart, userStats }) => {
           </div>
 
           {/* Description */}
-          <p className="text-sm text-slate-400 text-center leading-relaxed">
+          <p className="text-sm md:text-base text-slate-400 text-center leading-relaxed">
             {getLevelDesc(level)}
           </p>
         </div>
       </div>
 
       {/* Start Button - Fixed Bottom */}
-      <div className="p-6 md:p-8">
+      <div className="p-6 md:p-10 pt-8">
         <button
           onClick={() => onStart(level)}
           className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
@@ -864,22 +864,22 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center p-6 md:p-8 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="flex-1 flex flex-col items-center px-8 py-8 md:px-10 md:py-10 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
       {/* Background Slash Pattern */}
-      <svg className="absolute inset-0 w-full h-full opacity-20" preserveAspectRatio="none" viewBox="0 0 100 100">
+      <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="resultSlash1" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="transparent" />
-            <stop offset="50%" stopColor="#14b8a6" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#14b8a6" stopOpacity="0.4" />
             <stop offset="100%" stopColor="transparent" />
           </linearGradient>
         </defs>
-        <line x1="10" y1="100" x2="30" y2="70" stroke="url(#resultSlash1)" strokeWidth="0.15" />
-        <line x1="70" y1="30" x2="90" y2="0" stroke="url(#resultSlash1)" strokeWidth="0.15" />
-        <line x1="0" y1="60" x2="15" y2="40" stroke="url(#resultSlash1)" strokeWidth="0.1" />
-        <line x1="85" y1="60" x2="100" y2="40" stroke="url(#resultSlash1)" strokeWidth="0.1" />
+        <line x1="5" y1="100" x2="35" y2="65" stroke="url(#resultSlash1)" strokeWidth="0.25" />
+        <line x1="65" y1="35" x2="95" y2="0" stroke="url(#resultSlash1)" strokeWidth="0.25" />
+        <line x1="0" y1="55" x2="20" y2="30" stroke="url(#resultSlash1)" strokeWidth="0.15" />
+        <line x1="80" y1="70" x2="100" y2="45" stroke="url(#resultSlash1)" strokeWidth="0.15" />
       </svg>
 
       {/* S-Rank Slash Effect */}
@@ -900,58 +900,58 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       )}
 
-      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-6 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-8 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
         結果発表
       </h2>
 
       {/* Rank Badge */}
-      <div className={`mb-6 flex flex-col items-center p-8 md:p-10 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+      <div className={`mb-8 flex flex-col items-center px-12 py-8 md:px-16 md:py-10 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
         <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}>
           {rank}
         </span>
-        <span className="text-sm font-bold text-slate-500 mt-2 tracking-widest">RANK</span>
+        <span className="text-sm font-bold text-slate-500 mt-3 tracking-widest">RANK</span>
       </div>
 
       {/* Score */}
-      <div className={`text-center mb-6 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`text-center mb-8 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="text-5xl md:text-6xl font-black text-white">
           {score}<span className="text-xl font-normal text-slate-500 ml-1">点</span>
         </div>
-        <div className="text-slate-400 text-base mt-2 flex items-center justify-center gap-2">
+        <div className="text-slate-400 text-base mt-3 flex items-center justify-center gap-2">
           <Check className="w-4 h-4 text-emerald-400" />
           {correctCount} / {results.length} 正解
         </div>
       </div>
 
       {/* Results List */}
-      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 mb-6 max-h-48 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-5 mb-8 max-h-48 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         {results.map((r, i) => (
-          <div key={i} className="flex justify-between items-center py-3 border-b border-slate-700/50 last:border-0">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className={`w-6 h-6 rotate-45 flex items-center justify-center ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
+          <div key={i} className="flex justify-between items-center py-3.5 border-b border-slate-700/50 last:border-0">
+            <div className="flex items-center gap-4 overflow-hidden">
+              <div className={`w-7 h-7 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
                 <div className="-rotate-45">
                   {r.isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
                 </div>
               </div>
               <div className="text-sm"><MathRenderer node={r.display} /></div>
             </div>
-            {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-1 rounded-lg shrink-0 ml-2 font-medium border border-rose-500/30">{r.correctAns}</span>}
+            {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-1.5 rounded-lg shrink-0 ml-3 font-medium border border-rose-500/30">{r.correctAns}</span>}
           </div>
         ))}
       </div>
 
       {/* Action Buttons */}
-      <div className={`w-full space-y-3 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`w-full space-y-4 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <button
           onClick={onRetry}
-          className="w-full py-4 md:py-5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
+          className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-3"
         >
           <RotateCcw className="w-5 h-5" />
           もう一度挑戦
         </button>
         <button
           onClick={onHome}
-          className="w-full py-4 md:py-5 rounded-2xl bg-slate-700/50 text-slate-300 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-600/50 border border-slate-600/50"
+          className="w-full py-5 md:py-6 rounded-2xl bg-slate-700/50 text-slate-300 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-600/50 border border-slate-600/50"
         >
           ホームへ戻る
         </button>
