@@ -419,8 +419,8 @@ const KeyBtn = ({ char, onClick, type = 'default', className = '' }) => {
 
 // --- 4. App Shell ---
 const AppShell = ({ children }) => (
-  <div className="min-h-screen w-full flex items-center justify-center p-0 md:p-4 lg:p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
-    <div className="w-full max-w-lg lg:max-w-xl min-h-screen md:min-h-0 md:h-auto md:max-h-[900px] md:rounded-2xl overflow-hidden relative flex flex-col md:border md:border-slate-700/50 md:shadow-2xl md:shadow-black/50">
+  <div className="min-h-screen w-full flex items-center justify-center p-0 md:p-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="w-full max-w-[430px] min-h-screen md:min-h-0 md:h-[932px] md:rounded-2xl overflow-hidden relative flex flex-col md:border md:border-slate-700/50 md:shadow-2xl md:shadow-black/50" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #020617 100%)' }}>
       {children}
     </div>
     <style>{`
