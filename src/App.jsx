@@ -492,8 +492,11 @@ const SplashScreen = ({ onLogin }) => {
         }}
       />
 
-      {/* Logo Section */}
-      <div className={`text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      {/* Logo Section - 画面中心から上に80px */}
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ top: 'calc(50% - 80px)', transform: 'translateX(-50%) translateY(-50%)' }}
+      >
         {/* Z Logo with metallic effect */}
         <div className="relative inline-block mb-4">
           <div
@@ -534,8 +537,11 @@ const SplashScreen = ({ onLogin }) => {
         </p>
       </div>
 
-      {/* Tap to Start - 下部余白拡大 */}
-      <div className={`absolute bottom-20 md:bottom-24 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Tap to Start - 画面中心から下に280px */}
+      <div
+        className={`absolute left-1/2 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        style={{ top: 'calc(50% + 280px)', transform: 'translateX(-50%)' }}
+      >
         <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow">
           TAP TO START
         </p>
@@ -579,16 +585,22 @@ const HomeScreen = ({ onStart, userStats }) => {
   const increaseLevel = () => setLevel(l => Math.min(10, l + 1));
 
   return (
-    <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
-      {/* Minimal Header - 上部余白追加 */}
-      <div className="px-6 py-6 md:px-8 md:py-8 flex justify-between items-center">
-        <button className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
-          <Settings className="text-slate-400 w-5 h-5" />
-        </button>
-        <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
-          Zan
-        </h1>
-      </div>
+    <div className="flex-1 flex flex-col relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+      {/* Header - 固定位置で配置 */}
+      {/* 歯車マーク - 左上から24px */}
+      <button
+        className="absolute w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors z-10"
+        style={{ top: '24px', left: '24px' }}
+      >
+        <Settings className="text-slate-400 w-5 h-5" />
+      </button>
+      {/* Zanロゴ - 右上から24px */}
+      <h1
+        className="absolute text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400 z-10"
+        style={{ top: '32px', right: '24px' }}
+      >
+        Zan
+      </h1>
 
       {/* Main Content - 左右余白拡大 */}
       <div className="flex-1 flex flex-col justify-center px-8 md:px-12 lg:px-16">
@@ -661,8 +673,11 @@ const HomeScreen = ({ onStart, userStats }) => {
         </div>
       </div>
 
-      {/* Start Button - 余白拡大 */}
-      <div className="p-8 md:p-12 pt-6">
+      {/* Start Button - 画面下端から40px固定 */}
+      <div
+        className="absolute left-0 right-0 px-8 md:px-12"
+        style={{ bottom: '40px' }}
+      >
         <button
           onClick={() => onStart(level)}
           className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
@@ -924,18 +939,18 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       </div>
 
-      {/* Results List - 行間・余白拡大 */}
-      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 mb-10 max-h-52 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="space-y-4">
+      {/* Results List - 5問をバランスよく表示 */}
+      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="space-y-0">
           {results.map((r, i) => (
-            <div key={i} className="flex justify-between items-center py-4 border-b border-slate-700/50 last:border-0">
-              <div className="flex items-center gap-4 overflow-hidden">
-                <div className={`w-8 h-8 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
+            <div key={i} className="flex justify-between items-center py-5 border-b border-slate-700/30 last:border-0">
+              <div className="flex items-center gap-5 overflow-hidden">
+                <div className={`w-9 h-9 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
                   <div className="-rotate-45">
-                    {r.isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
+                    {r.isCorrect ? <Check className="w-5 h-5 text-emerald-400" /> : <X className="w-5 h-5 text-rose-400" />}
                   </div>
                 </div>
-                <div className="text-sm leading-relaxed"><MathRenderer node={r.display} /></div>
+                <div className="text-base leading-relaxed"><MathRenderer node={r.display} /></div>
               </div>
               {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-2 rounded-lg shrink-0 ml-4 font-medium border border-rose-500/30">{r.correctAns}</span>}
             </div>
