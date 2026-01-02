@@ -446,7 +446,7 @@ const SplashScreen = ({ onLogin }) => {
   return (
     <div
       onClick={handleTap}
-      className="flex-1 flex flex-col items-center justify-center p-10 md:p-12 relative overflow-hidden cursor-pointer select-none"
+      className="flex-1 flex flex-col items-center justify-center gap-12 pt-10 pb-16 px-10 relative overflow-hidden cursor-pointer select-none"
       style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 50%, #0f172a 100%)' }}
     >
       {/* Slash Lines - Decorative */}
@@ -492,8 +492,8 @@ const SplashScreen = ({ onLogin }) => {
         }}
       />
 
-      {/* Logo Section - flexboxで中央配置 */}
-      <div className={`flex-1 flex flex-col items-center justify-center text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      {/* Logo Section - shrink-0で固定 */}
+      <div className={`shrink-0 flex flex-col items-center justify-center text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Z Logo with metallic effect */}
         <div className="relative inline-block mb-4">
           <div
@@ -534,8 +534,8 @@ const SplashScreen = ({ onLogin }) => {
         </p>
       </div>
 
-      {/* Tap to Start - 下部に固定（shrink-0で潰れ防止） */}
-      <div className={`shrink-0 pb-16 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Tap to Start - shrink-0で潰れ防止 */}
+      <div className={`shrink-0 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow text-center">
           TAP TO START
         </p>
@@ -579,12 +579,9 @@ const HomeScreen = ({ onStart, userStats }) => {
   const increaseLevel = () => setLevel(l => Math.min(10, l + 1));
 
   return (
-    <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
-      {/* 最上部スペーサー - ヘッダーを少し下げる */}
-      <div className="flex-1 max-h-8" />
-
-      {/* Header - flexboxで配置（shrink-0で潰れ防止） */}
-      <div className="shrink-0 px-6 py-4 flex justify-between items-center">
+    <div className="flex-1 flex flex-col pt-8 pb-10 gap-6" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+      {/* Header - shrink-0で潰れ防止 */}
+      <div className="shrink-0 px-6 flex justify-between items-center">
         <button className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
           <Settings className="text-slate-400 w-5 h-5" />
         </button>
@@ -593,11 +590,8 @@ const HomeScreen = ({ onStart, userStats }) => {
         </h1>
       </div>
 
-      {/* 上部スペーサー - 1の比率 */}
-      <div className="flex-1" />
-
-      {/* Main Content - 固定サイズ */}
-      <div className="shrink-0 px-8 md:px-12 lg:px-16">
+      {/* Main Content - flex-1で残りスペース、中央揃え */}
+      <div className="flex-1 flex flex-col justify-center px-8 md:px-12 lg:px-16">
         {/* Today's Stats */}
         <div className="text-center mb-6">
           <p className="text-slate-500 text-sm leading-relaxed">
@@ -667,10 +661,7 @@ const HomeScreen = ({ onStart, userStats }) => {
         </div>
       </div>
 
-      {/* 中間スペーサー - ボタンを下に押す */}
-      <div className="flex-1" />
-
-      {/* Start Button - 中間位置に配置 */}
+      {/* Start Button - shrink-0で潰れ防止 */}
       <div className="shrink-0 px-8">
         <button
           onClick={() => onStart(level)}
@@ -681,9 +672,6 @@ const HomeScreen = ({ onStart, userStats }) => {
           斬り込む
         </button>
       </div>
-
-      {/* 下部スペーサー - ボタンを上に持ち上げる */}
-      <div className="flex-1" />
     </div>
   );
 };
@@ -746,11 +734,11 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
   );
 
   return (
-    <div className={`flex-1 flex flex-col ${shake ? 'animate-shake' : ''}`} style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className={`flex-1 flex flex-col pt-6 gap-2 ${shake ? 'animate-shake' : ''}`} style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
-      {/* Header - 余白拡大 */}
-      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center">
+      {/* Header - shrink-0で潰れ防止 */}
+      <div className="shrink-0 px-5 py-2 md:px-6 md:py-3 flex justify-between items-center">
         <button onClick={onQuit} className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center active:scale-95 transition-all hover:bg-white/10">
           <X className="w-5 h-5" />
         </button>
@@ -804,8 +792,8 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
         </div>
       </div>
 
-      {/* Input Display - 余白拡大 */}
-      <div className="px-6 md:px-8 mb-4">
+      {/* Input Display - shrink-0で潰れ防止 */}
+      <div className="shrink-0 px-6 md:px-8 mb-4">
         <input
           type="text"
           readOnly
@@ -818,8 +806,8 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
         />
       </div>
 
-      {/* Keypad - 余白拡大 */}
-      <div className="bg-slate-900/80 backdrop-blur-sm p-5 md:p-6 pt-6 md:pt-7 rounded-t-2xl border-t border-slate-700/50">
+      {/* Keypad - shrink-0で潰れ防止 */}
+      <div className="shrink-0 bg-slate-900/80 backdrop-blur-sm p-5 md:p-6 pt-6 md:pt-7 rounded-t-2xl border-t border-slate-700/50">
         <div className="grid grid-cols-4 gap-2.5 md:gap-3 max-w-md mx-auto">
           {['7','8','9'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
           <KeyBtn char="DEL" type="del" onClick={handleInput} />
@@ -876,7 +864,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="flex-1 flex flex-col pt-10 pb-8 px-6 gap-4 relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
       {/* Background Slash Pattern */}
@@ -913,7 +901,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
       )}
 
       {/* Header Area - shrink-0で潰れ防止 */}
-      <div className="shrink-0 flex flex-col items-center pt-12 pb-4 px-8 z-10">
+      <div className="shrink-0 flex flex-col items-center z-10">
         {/* Title */}
         <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-6 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
           結果発表
@@ -939,8 +927,8 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       </div>
 
-      {/* Results List - flex-1で残りスペースを使用 */}
-      <div className={`flex-1 w-full px-6 overflow-y-auto z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Results List - flex-1 + min-h-0でスクロール可能に */}
+      <div className={`flex-1 min-h-0 w-full overflow-y-auto z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
           <div className="flex flex-col gap-3">
             {results.map((r, i) => (
@@ -968,22 +956,22 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       </div>
 
-      {/* Action Buttons - shrink-0で潰れ防止 */}
-      <div className={`shrink-0 w-full px-8 pb-10 pt-4 z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <div className="space-y-4">
-        <button
-          onClick={onRetry}
-          className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-3"
-        >
-          <RotateCcw className="w-5 h-5" />
-          もう一度挑戦
-        </button>
-        <button
-          onClick={onHome}
-          className="w-full py-5 md:py-6 rounded-2xl bg-slate-700/50 text-slate-300 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-600/50 border border-slate-600/50"
-        >
-          ホームへ戻る
-        </button>
+      {/* Action Buttons - shrink-0で潰れ防止、gap-4でボタン間隔確保 */}
+      <div className={`shrink-0 w-full z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className="flex flex-col gap-4">
+          <button
+            onClick={onRetry}
+            className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-3"
+          >
+            <RotateCcw className="w-5 h-5" />
+            もう一度挑戦
+          </button>
+          <button
+            onClick={onHome}
+            className="w-full py-5 md:py-6 rounded-2xl bg-slate-700/50 text-slate-300 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-600/50 border border-slate-600/50"
+          >
+            ホームへ戻る
+          </button>
         </div>
       </div>
     </div>
