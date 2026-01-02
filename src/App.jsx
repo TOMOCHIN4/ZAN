@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Trophy, BarChart2, Settings, X, Play, RotateCcw, Home, User, Check, Zap, Target } from 'lucide-react';
+import { Trophy, BarChart2, Settings, X, Play, RotateCcw, Home, User, Check, Zap, Target, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // --- 1. Math Engine V5: 定番数字対応 ---
 const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
@@ -348,23 +348,23 @@ const MathRenderer = ({ node, size = 'normal' }) => {
   const fracSize = size === 'large' ? 'text-base md:text-lg' : 'text-sm md:text-base';
 
   if (node.type === 'integer' || node.type === 'decimal') {
-    return <span className={`mx-0.5 md:mx-1 ${textSize} font-semibold text-slate-800`}>{node.value}</span>;
+    return <span className={`mx-0.5 md:mx-1 ${textSize} font-semibold text-slate-100`}>{node.value}</span>;
   }
   if (node.type === 'fraction') {
     return (
       <span className="inline-flex flex-col items-center mx-1 md:mx-2 align-middle">
-        <span className={`${fracSize} leading-tight px-1 text-slate-800 font-medium`}>{node.num}</span>
-        <span className="w-full h-[2px] bg-slate-600 my-0.5"></span>
-        <span className={`${fracSize} leading-tight px-1 text-slate-800 font-medium`}>{node.den}</span>
+        <span className={`${fracSize} leading-tight px-1 text-slate-100 font-medium`}>{node.num}</span>
+        <span className="w-full h-[2px] bg-teal-400/60 my-0.5"></span>
+        <span className={`${fracSize} leading-tight px-1 text-slate-100 font-medium`}>{node.den}</span>
       </span>
     );
   }
   if (node.type === 'paren') {
     return (
       <span className="inline-flex items-center">
-        <span className={`${textSize} text-slate-400 font-light mx-0.5`}>(</span>
+        <span className={`${textSize} text-slate-500 font-light mx-0.5`}>(</span>
         <MathRenderer node={node.content} size={size} />
-        <span className={`${textSize} text-slate-400 font-light mx-0.5`}>)</span>
+        <span className={`${textSize} text-slate-500 font-light mx-0.5`}>)</span>
       </span>
     );
   }
@@ -372,7 +372,7 @@ const MathRenderer = ({ node, size = 'normal' }) => {
     return (
       <span className="inline-flex items-center flex-wrap justify-center">
         <MathRenderer node={node.left} size={size} />
-        <span className={`mx-1 md:mx-2 ${textSize} text-teal-600 font-bold`}>{node.op}</span>
+        <span className={`mx-1 md:mx-2 ${textSize} text-teal-400 font-bold`}>{node.op}</span>
         <MathRenderer node={node.right} size={size} />
       </span>
     );
@@ -401,13 +401,13 @@ const Confetti = ({ active }) => {
 };
 
 const KeyBtn = ({ char, onClick, type = 'default', className = '' }) => {
-  const baseStyles = "font-bold rounded-xl shadow-sm flex items-center justify-center transition-all duration-150 active:scale-95 select-none";
+  const baseStyles = "font-bold rounded-xl flex items-center justify-center transition-all duration-150 active:scale-95 select-none";
   const sizeStyles = "h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl";
 
-  let colorStyles = "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200";
-  if (type === 'del') colorStyles = "bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200";
-  else if (type === 'clr') colorStyles = "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/25";
-  else if (type === 'op') colorStyles = "bg-teal-500 hover:bg-teal-600 text-white shadow-teal-500/25";
+  let colorStyles = "bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border border-slate-600/50";
+  if (type === 'del') colorStyles = "bg-rose-900/30 hover:bg-rose-800/40 text-rose-400 border border-rose-500/30";
+  else if (type === 'clr') colorStyles = "bg-rose-500 hover:bg-rose-600 text-white";
+  else if (type === 'op') colorStyles = "bg-teal-600/50 hover:bg-teal-500/50 text-teal-300 border border-teal-500/30";
   else if (type === 'enter') colorStyles = "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg shadow-emerald-500/30";
 
   return (
@@ -419,8 +419,8 @@ const KeyBtn = ({ char, onClick, type = 'default', className = '' }) => {
 
 // --- 4. App Shell ---
 const AppShell = ({ children }) => (
-  <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 via-slate-50 to-teal-50 flex items-center justify-center p-0 md:p-4 lg:p-8">
-    <div className="w-full max-w-lg lg:max-w-xl min-h-screen md:min-h-0 md:h-auto md:max-h-[900px] md:rounded-3xl bg-white md:shadow-2xl md:shadow-slate-300/50 overflow-hidden relative flex flex-col">
+  <div className="min-h-screen w-full flex items-center justify-center p-0 md:p-4 lg:p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="w-full max-w-lg lg:max-w-xl min-h-screen md:min-h-0 md:h-auto md:max-h-[900px] md:rounded-2xl overflow-hidden relative flex flex-col md:border md:border-slate-700/50 md:shadow-2xl md:shadow-black/50">
       {children}
     </div>
     <style>{`
@@ -433,58 +433,120 @@ const AppShell = ({ children }) => (
 // --- 5. Screens ---
 const SplashScreen = ({ onLogin }) => {
   const [loaded, setLoaded] = useState(false);
+  const [slashing, setSlashing] = useState(false);
+
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
+  const handleTap = () => {
+    if (slashing) return;
+    setSlashing(true);
+    setTimeout(() => onLogin(), 600);
+  };
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-white via-teal-50/30 to-slate-50 p-8 relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2314b8a6' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-      }} />
+    <div
+      onClick={handleTap}
+      className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer select-none"
+      style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 50%, #0f172a 100%)' }}
+    >
+      {/* Slash Lines - Decorative */}
+      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="slashGradient1" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="transparent" />
+            <stop offset="40%" stopColor="#14b8a6" stopOpacity="0.3" />
+            <stop offset="60%" stopColor="#14b8a6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="transparent" />
+          </linearGradient>
+          <linearGradient id="slashGradient2" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="transparent" />
+            <stop offset="50%" stopColor="#10b981" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="transparent" />
+          </linearGradient>
+        </defs>
+        {/* Main slash line */}
+        <line
+          x1="5" y1="95" x2="40" y2="60"
+          stroke="url(#slashGradient1)"
+          strokeWidth="0.3"
+          className={`transition-all duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+        {/* Secondary slash line */}
+        <line
+          x1="60" y1="40" x2="95" y2="5"
+          stroke="url(#slashGradient2)"
+          strokeWidth="0.2"
+          className={`transition-all duration-700 delay-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+      </svg>
 
-      {/* Floating elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-teal-400/10 animate-float-slow" />
-      <div className="absolute bottom-32 right-8 w-16 h-16 rounded-full bg-amber-400/10 animate-float-medium" />
-      <div className="absolute top-40 right-16 w-12 h-12 rounded-full bg-rose-400/10 animate-float-fast" />
+      {/* Slash Transition Effect */}
+      <div
+        className={`absolute inset-0 bg-white z-50 transition-all duration-500 ease-out ${
+          slashing ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{
+          clipPath: slashing
+            ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+            : 'polygon(100% 0, 100% 0, 0 100%, 0 100%)'
+        }}
+      />
 
-      {/* Logo */}
-      <div className={`text-center transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="relative inline-block mb-6">
-          <div className="text-[140px] md:text-[180px] font-black text-transparent bg-clip-text bg-gradient-to-br from-teal-400 via-teal-500 to-emerald-600 leading-none tracking-tighter"
-               style={{ fontFamily: 'Georgia, serif', textShadow: '0 4px 30px rgba(20, 184, 166, 0.3)' }}>
+      {/* Logo Section */}
+      <div className={`text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        {/* Z Logo with metallic effect */}
+        <div className="relative inline-block mb-4">
+          <div
+            className="text-[140px] md:text-[180px] font-black leading-none tracking-tighter"
+            style={{
+              fontFamily: 'Georgia, serif',
+              background: 'linear-gradient(135deg, #5eead4 0%, #14b8a6 25%, #0d9488 50%, #14b8a6 75%, #5eead4 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 4px 30px rgba(20, 184, 166, 0.4))',
+            }}
+          >
             Z
           </div>
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full" />
+          {/* Shine effect */}
+          <div
+            className="absolute inset-0 text-[140px] md:text-[180px] font-black leading-none tracking-tighter opacity-30"
+            style={{
+              fontFamily: 'Georgia, serif',
+              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Z
+          </div>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
           Zan
-          <span className="text-lg md:text-xl font-normal text-slate-400 ml-3 tracking-widest">斬</span>
+          <span className="text-lg md:text-xl font-normal text-teal-400/70 ml-3 tracking-widest">斬</span>
         </h1>
 
-        <p className="mt-6 text-slate-500 text-sm md:text-base tracking-[0.3em] font-medium">
+        <p className="mt-6 text-teal-300/80 text-sm md:text-base tracking-[0.3em] font-medium">
           難問を、斬る。
         </p>
       </div>
 
-      {/* CTA Button */}
-      <div className={`w-full max-w-xs mt-16 transition-all duration-700 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <button
-          onClick={onLogin}
-          className="w-full py-4 md:py-5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-lg font-bold shadow-xl shadow-teal-500/30 hover:shadow-2xl hover:shadow-teal-500/40 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3"
-        >
-          <Play fill="currentColor" className="w-5 h-5" />
-          はじめる
-        </button>
+      {/* Tap to Start */}
+      <div className={`absolute bottom-16 md:bottom-20 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+        <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow">
+          TAP TO START
+        </p>
       </div>
 
       <style>{`
-        @keyframes float-slow { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(5deg); } }
-        @keyframes float-medium { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-15px) rotate(-5deg); } }
-        @keyframes float-fast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
-        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
-        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 2.5s ease-in-out infinite; }
       `}</style>
     </div>
   );
@@ -492,21 +554,17 @@ const SplashScreen = ({ onLogin }) => {
 
 const HomeScreen = ({ onStart, userStats }) => {
   const [level, setLevel] = useState(5);
+
   const getLevelLabel = (l) => ["基礎","基礎","標準","標準","応用","応用","難関","難関","魔界","魔界"][l-1] || "魔界";
+
   const getLevelColor = (l) => {
-    if (l <= 2) return "from-emerald-400 to-green-500";
-    if (l <= 4) return "from-sky-400 to-blue-500";
-    if (l <= 6) return "from-amber-400 to-orange-500";
-    if (l <= 8) return "from-rose-400 to-red-500";
-    return "from-purple-400 to-violet-600";
+    if (l <= 2) return { bg: 'from-emerald-500 to-green-600', text: 'text-emerald-400', border: 'border-emerald-500/30' };
+    if (l <= 4) return { bg: 'from-sky-500 to-blue-600', text: 'text-sky-400', border: 'border-sky-500/30' };
+    if (l <= 6) return { bg: 'from-amber-500 to-orange-600', text: 'text-amber-400', border: 'border-amber-500/30' };
+    if (l <= 8) return { bg: 'from-rose-500 to-red-600', text: 'text-rose-400', border: 'border-rose-500/30' };
+    return { bg: 'from-purple-500 to-violet-700', text: 'text-purple-400', border: 'border-purple-500/30' };
   };
-  const getLevelBadge = (l) => {
-    if (l <= 2) return "bg-emerald-100 text-emerald-700 border-emerald-200";
-    if (l <= 4) return "bg-sky-100 text-sky-700 border-sky-200";
-    if (l <= 6) return "bg-amber-100 text-amber-700 border-amber-200";
-    if (l <= 8) return "bg-rose-100 text-rose-700 border-rose-200";
-    return "bg-purple-100 text-purple-700 border-purple-200";
-  };
+
   const getLevelDesc = (l) => {
     if (l <= 2) return "分数・小数が混ざる基本問題";
     if (l <= 4) return "分数1〜2個を含む標準問題";
@@ -515,100 +573,103 @@ const HomeScreen = ({ onStart, userStats }) => {
     return "地獄級。分数だらけ";
   };
 
+  const colors = getLevelColor(level);
+
+  const decreaseLevel = () => setLevel(l => Math.max(1, l - 1));
+  const increaseLevel = () => setLevel(l => Math.min(10, l + 1));
+
   return (
-    <div className="flex-1 flex flex-col bg-slate-50">
-      {/* Header */}
-      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center bg-white border-b border-slate-100">
-        <button className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-          <Settings className="text-slate-500 w-5 h-5" />
+    <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+      {/* Minimal Header */}
+      <div className="px-5 py-4 md:px-6 md:py-5 flex justify-between items-center">
+        <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+          <Settings className="text-slate-400 w-5 h-5" />
         </button>
-        <h1 className="text-xl font-black bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">Zan</h1>
-        <button className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-          <User className="text-slate-500 w-5 h-5" />
-        </button>
+        <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
+          Zan
+        </h1>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-5 md:p-6 overflow-y-auto space-y-5">
-        {/* Today's Progress */}
-        <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
-              <Target className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-sm font-bold text-slate-600">今日の正解数</span>
-          </div>
-          <div className="flex items-end gap-2 mb-3">
-            <span className="text-5xl md:text-6xl font-black text-slate-800">{userStats.todayCount}</span>
-            <span className="text-lg font-medium text-slate-400 mb-2">問</span>
-          </div>
-          <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-            <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500 ease-out"
-                 style={{ width: `${Math.min(100, userStats.todayCount * 5)}%` }} />
-          </div>
-          <p className="text-xs text-slate-400 mt-2">目標: 20問</p>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-8">
+        {/* Today's Stats - Subtle */}
+        <div className="text-center mb-6">
+          <p className="text-slate-500 text-sm">
+            今日: <span className="text-teal-400 font-bold">{userStats.todayCount}</span> 問正解
+          </p>
         </div>
 
-        {/* Level Selector */}
-        <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex justify-between items-start mb-5">
-            <div>
-              <div className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${getLevelColor(level)} bg-clip-text text-transparent`}>
-                Lv.{level}
-              </div>
+        {/* Level Card - Main Focus */}
+        <div className={`relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-3xl p-8 md:p-10 border ${colors.border} backdrop-blur-sm`}>
+          {/* Level Number */}
+          <div className="text-center mb-6">
+            <div className={`text-7xl md:text-8xl font-black bg-gradient-to-br ${colors.bg} bg-clip-text text-transparent leading-none`}>
+              Lv.{level}
             </div>
-            <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${getLevelBadge(level)}`}>
+            <div className={`text-lg md:text-xl font-bold ${colors.text} mt-2 tracking-wider`}>
               {getLevelLabel(level)}
-            </span>
+            </div>
           </div>
 
-          {/* Custom Slider */}
-          <div className="relative mb-4">
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={level}
-              onChange={(e) => setLevel(parseInt(e.target.value))}
-              className="w-full h-3 bg-slate-200 rounded-full appearance-none cursor-pointer relative z-10"
-              style={{
-                background: `linear-gradient(to right, #14b8a6 0%, #14b8a6 ${(level - 1) * 11.1}%, #e2e8f0 ${(level - 1) * 11.1}%, #e2e8f0 100%)`
-              }}
-            />
+          {/* Left/Right Navigation */}
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={decreaseLevel}
+              disabled={level <= 1}
+              className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center transition-all active:scale-95 ${
+                level <= 1
+                  ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
+                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 border border-slate-600/50'
+              }`}
+            >
+              <ChevronLeft className="w-7 h-7" />
+            </button>
+
+            {/* Level Dots */}
+            <div className="flex gap-1.5">
+              {[...Array(10)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    i + 1 === level
+                      ? `bg-gradient-to-br ${colors.bg} scale-125`
+                      : i + 1 < level
+                        ? 'bg-teal-500/50'
+                        : 'bg-slate-600'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={increaseLevel}
+              disabled={level >= 10}
+              className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center transition-all active:scale-95 ${
+                level >= 10
+                  ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
+                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 border border-slate-600/50'
+              }`}
+            >
+              <ChevronRight className="w-7 h-7" />
+            </button>
           </div>
 
-          <div className="flex justify-between text-xs text-slate-400 font-mono mb-4">
-            <span>1</span>
-            <span>5</span>
-            <span>10</span>
-          </div>
-
-          <p className="text-sm text-slate-500 text-center bg-slate-50 rounded-xl py-3 px-4">{getLevelDesc(level)}</p>
+          {/* Description */}
+          <p className="text-sm text-slate-400 text-center leading-relaxed">
+            {getLevelDesc(level)}
+          </p>
         </div>
+      </div>
 
-        {/* Start Button */}
+      {/* Start Button - Fixed Bottom */}
+      <div className="p-6 md:p-8">
         <button
           onClick={() => onStart(level)}
-          className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-xl font-bold shadow-xl shadow-teal-500/30 flex items-center justify-center gap-3 active:scale-[0.98] transition-all hover:shadow-2xl hover:shadow-teal-500/40"
+          className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
+          style={{ boxShadow: '0 10px 40px rgba(20, 184, 166, 0.3)' }}
         >
           <Zap className="w-6 h-6" fill="currentColor" />
-          スタート
-        </button>
-      </div>
-
-      {/* Bottom Nav */}
-      <div className="bg-white border-t border-slate-100 px-6 py-3 md:py-4 flex justify-around">
-        <button className="flex flex-col items-center gap-1 text-teal-500">
-          <Home className="w-6 h-6" />
-          <span className="text-[10px] font-bold">ホーム</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-300 hover:text-slate-400 transition-colors">
-          <BarChart2 className="w-6 h-6" />
-          <span className="text-[10px] font-bold">統計</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-300 hover:text-slate-400 transition-colors">
-          <Trophy className="w-6 h-6" />
-          <span className="text-[10px] font-bold">実績</span>
+          斬り込む
         </button>
       </div>
     </div>
@@ -667,64 +728,66 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
   };
 
   if (!problem) return (
-    <div className="flex-1 flex items-center justify-center bg-slate-50">
+    <div className="flex-1 flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <div className="animate-spin w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full"></div>
     </div>
   );
 
   return (
-    <div className={`flex-1 flex flex-col bg-slate-50 ${shake ? 'animate-shake' : ''}`}>
+    <div className={`flex-1 flex flex-col ${shake ? 'animate-shake' : ''}`} style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
-      {/* Header */}
-      <div className="p-4 md:p-5 flex justify-between items-center">
-        <button onClick={onQuit} className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white border border-slate-200 text-slate-500 flex items-center justify-center active:scale-95 transition-transform shadow-sm">
-          <X className="w-5 h-5 md:w-6 md:h-6" />
+      {/* Compact Header */}
+      <div className="px-4 py-3 md:px-5 md:py-4 flex justify-between items-center">
+        <button onClick={onQuit} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center active:scale-95 transition-all hover:bg-white/10">
+          <X className="w-5 h-5" />
         </button>
 
-        {/* Progress Dots */}
-        <div className="flex items-center gap-2 md:gap-3">
+        {/* Progress Diamonds */}
+        <div className="flex items-center gap-2">
           {[...Array(MAX_QUESTIONS)].map((_, i) => (
             <div
               key={i}
-              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
+              className={`w-3 h-3 rotate-45 transition-all duration-300 ${
                 i < results.length
-                  ? (results[i].isCorrect ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 'bg-rose-400 shadow-lg shadow-rose-400/50')
+                  ? (results[i].isCorrect
+                      ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50'
+                      : 'bg-rose-400 shadow-lg shadow-rose-400/50')
                   : i === results.length
                     ? 'bg-teal-400 scale-125 shadow-lg shadow-teal-400/50'
-                    : 'bg-slate-200'
+                    : 'bg-slate-600'
               }`}
             />
           ))}
         </div>
 
-        <div className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/20">
+        <div className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-bold">
           Lv.{level}
         </div>
       </div>
 
       {/* Problem Display */}
       <div className="flex-1 px-4 md:px-6 flex flex-col justify-center">
-        <div className={`bg-white rounded-3xl shadow-lg border-2 p-6 md:p-8 min-h-[160px] md:min-h-[200px] flex items-center justify-center transition-all duration-300
-          ${feedback.status === 'correct' ? 'border-emerald-400 bg-emerald-50 shadow-emerald-100' :
-            feedback.status === 'wrong' ? 'border-rose-400 bg-rose-50 shadow-rose-100' :
-            'border-slate-100 shadow-slate-100'}`}>
+        <div className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl border p-6 md:p-8 min-h-[140px] md:min-h-[180px] flex items-center justify-center transition-all duration-300
+          ${feedback.status === 'correct' ? 'border-emerald-500/50 bg-emerald-900/30' :
+            feedback.status === 'wrong' ? 'border-rose-500/50 bg-rose-900/30' :
+            'border-slate-700/50'}`}>
           <div className="font-bold flex items-center flex-wrap justify-center gap-2">
             <MathRenderer node={problem.display} size="large" />
-            <span className="mx-2 md:mx-4 text-2xl md:text-3xl text-slate-400">=</span>
-            <span className="text-3xl md:text-4xl text-teal-500 font-black">?</span>
+            <span className="mx-2 md:mx-4 text-2xl md:text-3xl text-slate-500">=</span>
+            <span className="text-3xl md:text-4xl text-teal-400 font-black">?</span>
           </div>
         </div>
 
         {/* Feedback */}
-        <div className="mt-4 h-8 flex justify-center items-center">
+        <div className="mt-3 h-8 flex justify-center items-center">
           {feedback.status === 'correct' && (
-            <span className="text-emerald-500 font-bold text-lg md:text-xl animate-bounce flex items-center gap-2">
+            <span className="text-emerald-400 font-bold text-lg md:text-xl animate-bounce flex items-center gap-2">
               <Check className="w-5 h-5" /> {feedback.msg}
             </span>
           )}
           {feedback.status === 'wrong' && (
-            <span className="text-rose-500 font-bold text-sm md:text-base">{feedback.msg}</span>
+            <span className="text-rose-400 font-bold text-sm md:text-base">{feedback.msg}</span>
           )}
         </div>
       </div>
@@ -736,15 +799,15 @@ const DrillScreen = ({ level, onFinishSet, onQuit }) => {
           readOnly
           value={input}
           placeholder="答えを入力"
-          className={`w-full h-14 md:h-16 text-2xl md:text-3xl font-mono text-center rounded-2xl border-2 outline-none bg-white transition-all duration-200
-            ${feedback.status === 'correct' ? 'border-emerald-500 text-emerald-600' :
-              feedback.status === 'wrong' ? 'border-rose-500 text-rose-600' :
-              'border-teal-400 text-slate-700 focus:shadow-lg focus:shadow-teal-500/10'}`}
+          className={`w-full h-14 md:h-16 text-2xl md:text-3xl font-mono text-center rounded-xl border-2 outline-none transition-all duration-200
+            ${feedback.status === 'correct' ? 'border-emerald-500 bg-emerald-900/30 text-emerald-400' :
+              feedback.status === 'wrong' ? 'border-rose-500 bg-rose-900/30 text-rose-400' :
+              'border-teal-500/50 bg-slate-800/50 text-white placeholder-slate-500'}`}
         />
       </div>
 
       {/* Keypad */}
-      <div className="bg-white p-4 md:p-5 pt-5 md:pt-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] border-t border-slate-100">
+      <div className="bg-slate-900/80 backdrop-blur-sm p-4 md:p-5 pt-5 md:pt-6 rounded-t-2xl border-t border-slate-700/50">
         <div className="grid grid-cols-4 gap-2 md:gap-3 max-w-md mx-auto">
           {['7','8','9'].map(n => <KeyBtn key={n} char={n} onClick={handleInput} />)}
           <KeyBtn char="DEL" type="del" onClick={handleInput} />
@@ -773,62 +836,112 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   const score = Math.round((correctCount / results.length) * 100);
   const [showConfetti, setShowConfetti] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [slashAnimated, setSlashAnimated] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
-    if (score === 100) setShowConfetti(true);
+    if (score === 100) {
+      setShowConfetti(true);
+      setTimeout(() => setSlashAnimated(true), 300);
+    }
   }, [score]);
 
-  let rank = 'C', rankGradient = 'from-slate-300 to-slate-400', rankBg = 'bg-slate-100';
-  if (score === 100) { rank = 'S'; rankGradient = 'from-amber-400 via-yellow-400 to-amber-500'; rankBg = 'bg-gradient-to-br from-amber-50 to-yellow-50'; }
-  else if (score >= 80) { rank = 'A'; rankGradient = 'from-sky-400 to-blue-500'; rankBg = 'bg-sky-50'; }
-  else if (score >= 60) { rank = 'B'; rankGradient = 'from-orange-400 to-amber-500'; rankBg = 'bg-orange-50'; }
+  let rank = 'C', rankGradient = 'from-slate-400 to-slate-500', rankBorder = 'border-slate-600/30', rankGlow = '';
+  if (score === 100) {
+    rank = 'S';
+    rankGradient = 'from-amber-400 via-yellow-300 to-amber-500';
+    rankBorder = 'border-amber-500/50';
+    rankGlow = 'shadow-2xl shadow-amber-500/30';
+  } else if (score >= 80) {
+    rank = 'A';
+    rankGradient = 'from-sky-400 to-blue-500';
+    rankBorder = 'border-sky-500/30';
+    rankGlow = 'shadow-lg shadow-sky-500/20';
+  } else if (score >= 60) {
+    rank = 'B';
+    rankGradient = 'from-orange-400 to-amber-500';
+    rankBorder = 'border-orange-500/30';
+  }
 
   return (
-    <div className="flex-1 bg-white flex flex-col items-center p-6 md:p-8 overflow-y-auto">
+    <div className="flex-1 flex flex-col items-center p-6 md:p-8 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
-      <h2 className={`text-xl md:text-2xl font-black text-slate-700 mb-6 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+      {/* Background Slash Pattern */}
+      <svg className="absolute inset-0 w-full h-full opacity-20" preserveAspectRatio="none" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="resultSlash1" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="transparent" />
+            <stop offset="50%" stopColor="#14b8a6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="transparent" />
+          </linearGradient>
+        </defs>
+        <line x1="10" y1="100" x2="30" y2="70" stroke="url(#resultSlash1)" strokeWidth="0.15" />
+        <line x1="70" y1="30" x2="90" y2="0" stroke="url(#resultSlash1)" strokeWidth="0.15" />
+        <line x1="0" y1="60" x2="15" y2="40" stroke="url(#resultSlash1)" strokeWidth="0.1" />
+        <line x1="85" y1="60" x2="100" y2="40" stroke="url(#resultSlash1)" strokeWidth="0.1" />
+      </svg>
+
+      {/* S-Rank Slash Effect */}
+      {score === 100 && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div
+            className={`absolute w-[200%] h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent transform -rotate-45 transition-all duration-700 ease-out ${
+              slashAnimated ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+            }`}
+            style={{ top: '30%', left: '-50%' }}
+          />
+          <div
+            className={`absolute w-[200%] h-0.5 bg-gradient-to-r from-transparent via-yellow-300 to-transparent transform -rotate-45 transition-all duration-700 ease-out delay-150 ${
+              slashAnimated ? 'translate-x-0 opacity-80' : '-translate-x-full opacity-0'
+            }`}
+            style={{ top: '35%', left: '-50%' }}
+          />
+        </div>
+      )}
+
+      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-6 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
         結果発表
       </h2>
 
       {/* Rank Badge */}
-      <div className={`mb-6 flex flex-col items-center p-8 md:p-10 rounded-3xl ${rankBg} shadow-lg transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}
-              style={{ textShadow: score === 100 ? '0 4px 20px rgba(251, 191, 36, 0.3)' : 'none' }}>
+      <div className={`mb-6 flex flex-col items-center p-8 md:p-10 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+        <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}>
           {rank}
         </span>
-        <span className="text-sm font-bold text-slate-400 mt-2 tracking-widest">RANK</span>
+        <span className="text-sm font-bold text-slate-500 mt-2 tracking-widest">RANK</span>
       </div>
 
       {/* Score */}
-      <div className={`text-center mb-6 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <div className="text-5xl md:text-6xl font-black text-slate-800">
-          {score}<span className="text-xl font-normal text-slate-400 ml-1">点</span>
+      <div className={`text-center mb-6 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className="text-5xl md:text-6xl font-black text-white">
+          {score}<span className="text-xl font-normal text-slate-500 ml-1">点</span>
         </div>
-        <div className="text-slate-500 text-base mt-2 flex items-center justify-center gap-2">
-          <Check className="w-4 h-4 text-emerald-500" />
+        <div className="text-slate-400 text-base mt-2 flex items-center justify-center gap-2">
+          <Check className="w-4 h-4 text-emerald-400" />
           {correctCount} / {results.length} 正解
         </div>
       </div>
 
       {/* Results List */}
-      <div className={`w-full bg-slate-50 rounded-2xl p-4 mb-6 max-h-48 overflow-y-auto transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 mb-6 max-h-48 overflow-y-auto border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         {results.map((r, i) => (
-          <div key={i} className="flex justify-between items-center py-3 border-b border-slate-100 last:border-0">
+          <div key={i} className="flex justify-between items-center py-3 border-b border-slate-700/50 last:border-0">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${r.isCorrect ? 'bg-emerald-100' : 'bg-rose-100'}`}>
-                {r.isCorrect ? <Check className="w-4 h-4 text-emerald-500" /> : <X className="w-4 h-4 text-rose-500" />}
+              <div className={`w-6 h-6 rotate-45 flex items-center justify-center ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
+                <div className="-rotate-45">
+                  {r.isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
+                </div>
               </div>
               <div className="text-sm"><MathRenderer node={r.display} /></div>
             </div>
-            {!r.isCorrect && <span className="text-xs text-rose-600 bg-rose-100 px-3 py-1 rounded-lg shrink-0 ml-2 font-medium">{r.correctAns}</span>}
+            {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-1 rounded-lg shrink-0 ml-2 font-medium border border-rose-500/30">{r.correctAns}</span>}
           </div>
         ))}
       </div>
 
       {/* Action Buttons */}
-      <div className={`w-full space-y-3 mt-auto transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`w-full space-y-3 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <button
           onClick={onRetry}
           className="w-full py-4 md:py-5 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
@@ -838,7 +951,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </button>
         <button
           onClick={onHome}
-          className="w-full py-4 md:py-5 rounded-2xl bg-slate-100 text-slate-600 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-200"
+          className="w-full py-4 md:py-5 rounded-2xl bg-slate-700/50 text-slate-300 font-bold active:scale-[0.98] transition-all text-lg hover:bg-slate-600/50 border border-slate-600/50"
         >
           ホームへ戻る
         </button>
