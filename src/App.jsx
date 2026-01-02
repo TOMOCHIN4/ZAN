@@ -590,10 +590,13 @@ const HomeScreen = ({ onStart, userStats }) => {
         </h1>
       </div>
 
-      {/* Main Content - 左右余白拡大 */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-12 lg:px-16">
-        {/* Today's Stats - 余白拡大 */}
-        <div className="text-center mb-10">
+      {/* 上部スペーサー - 1の比率 */}
+      <div className="flex-1" />
+
+      {/* Main Content - 固定サイズ */}
+      <div className="shrink-0 px-8 md:px-12 lg:px-16">
+        {/* Today's Stats */}
+        <div className="text-center mb-6">
           <p className="text-slate-500 text-sm leading-relaxed">
             今日: <span className="text-teal-400 font-bold">{userStats.todayCount}</span> 問正解
           </p>
@@ -661,8 +664,8 @@ const HomeScreen = ({ onStart, userStats }) => {
         </div>
       </div>
 
-      {/* Spacer - LVカードとボタンの中間に配置するためのスペース */}
-      <div className="flex-1 max-h-24" />
+      {/* 下部スペーサー - 2の比率（上部の2倍）でボタンを中間に */}
+      <div className="flex-[2]" />
 
       {/* Start Button - 中間位置に配置 */}
       <div className="shrink-0 px-8 pb-10">
