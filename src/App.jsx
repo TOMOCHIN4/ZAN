@@ -664,11 +664,11 @@ const HomeScreen = ({ onStart, userStats }) => {
         </div>
       </div>
 
-      {/* 下部スペーサー - 2の比率（上部の2倍）でボタンを中間に */}
-      <div className="flex-[2]" />
+      {/* 中間スペーサー - ボタンを下に押す */}
+      <div className="flex-1" />
 
       {/* Start Button - 中間位置に配置 */}
-      <div className="shrink-0 px-8 pb-10">
+      <div className="shrink-0 px-8">
         <button
           onClick={() => onStart(level)}
           className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
@@ -678,6 +678,9 @@ const HomeScreen = ({ onStart, userStats }) => {
           斬り込む
         </button>
       </div>
+
+      {/* 下部スペーサー - ボタンを上に持ち上げる */}
+      <div className="flex-1" />
     </div>
   );
 };
