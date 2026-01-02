@@ -492,11 +492,8 @@ const SplashScreen = ({ onLogin }) => {
         }}
       />
 
-      {/* Logo Section - 画面中心から上に80px */}
-      <div
-        className={`absolute left-1/2 -translate-x-1/2 text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-        style={{ top: 'calc(50% - 80px)', transform: 'translateX(-50%) translateY(-50%)' }}
-      >
+      {/* Logo Section - flexboxで中央配置 */}
+      <div className={`flex-1 flex flex-col items-center justify-center text-center z-10 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Z Logo with metallic effect */}
         <div className="relative inline-block mb-4">
           <div
@@ -537,12 +534,9 @@ const SplashScreen = ({ onLogin }) => {
         </p>
       </div>
 
-      {/* Tap to Start - 画面中心から下に280px */}
-      <div
-        className={`absolute left-1/2 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ top: 'calc(50% + 280px)', transform: 'translateX(-50%)' }}
-      >
-        <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow">
+      {/* Tap to Start - 下部に固定（shrink-0で潰れ防止） */}
+      <div className={`shrink-0 pb-16 z-10 transition-all duration-700 delay-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+        <p className="text-teal-400/60 text-xs md:text-sm tracking-[0.4em] font-medium animate-pulse-slow text-center">
           TAP TO START
         </p>
       </div>
@@ -585,22 +579,16 @@ const HomeScreen = ({ onStart, userStats }) => {
   const increaseLevel = () => setLevel(l => Math.min(10, l + 1));
 
   return (
-    <div className="flex-1 flex flex-col relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
-      {/* Header - 固定位置で配置 */}
-      {/* 歯車マーク - 左上から24px */}
-      <button
-        className="absolute w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors z-10"
-        style={{ top: '24px', left: '24px' }}
-      >
-        <Settings className="text-slate-400 w-5 h-5" />
-      </button>
-      {/* Zanロゴ - 右上から24px */}
-      <h1
-        className="absolute text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400 z-10"
-        style={{ top: '32px', right: '24px' }}
-      >
-        Zan
-      </h1>
+    <div className="flex-1 flex flex-col" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+      {/* Header - flexboxで配置（shrink-0で潰れ防止） */}
+      <div className="shrink-0 px-6 py-6 flex justify-between items-center">
+        <button className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+          <Settings className="text-slate-400 w-5 h-5" />
+        </button>
+        <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
+          Zan
+        </h1>
+      </div>
 
       {/* Main Content - 左右余白拡大 */}
       <div className="flex-1 flex flex-col justify-center px-8 md:px-12 lg:px-16">
@@ -673,11 +661,8 @@ const HomeScreen = ({ onStart, userStats }) => {
         </div>
       </div>
 
-      {/* Start Button - 画面下端から40px固定 */}
-      <div
-        className="absolute left-0 right-0 px-8 md:px-12"
-        style={{ bottom: '40px' }}
-      >
+      {/* Start Button - flexboxで下部配置（shrink-0で潰れ防止） */}
+      <div className="shrink-0 px-8 pb-10 pt-4">
         <button
           onClick={() => onStart(level)}
           className={`w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r ${colors.bg} text-white text-xl font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all`}
@@ -879,7 +864,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center px-8 pt-16 pb-10 md:px-12 md:pt-20 md:pb-12 overflow-y-auto relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div className="flex-1 flex flex-col relative" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
       <Confetti active={showConfetti} />
 
       {/* Background Slash Pattern */}
@@ -915,51 +900,65 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         </div>
       )}
 
-      {/* Title - 余白拡大 */}
-      <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-10 z-10 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-        結果発表
-      </h2>
+      {/* Header Area - shrink-0で潰れ防止 */}
+      <div className="shrink-0 flex flex-col items-center pt-12 pb-4 px-8 z-10">
+        {/* Title */}
+        <h2 className={`text-xl md:text-2xl font-black text-slate-300 mb-6 transition-all duration-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+          結果発表
+        </h2>
 
-      {/* Rank Badge - 余白拡大 */}
-      <div className={`mb-10 flex flex-col items-center px-14 py-10 md:px-18 md:py-12 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} z-10 transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        <span className={`text-7xl md:text-8xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}>
-          {rank}
-        </span>
-        <span className="text-sm font-bold text-slate-500 mt-4 tracking-widest">RANK</span>
+        {/* Rank Badge */}
+        <div className={`mb-6 flex flex-col items-center px-12 py-8 rounded-3xl bg-slate-800/60 backdrop-blur-sm border ${rankBorder} ${rankGlow} transition-all duration-700 delay-200 ${loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+          <span className={`text-6xl md:text-7xl font-black leading-none bg-gradient-to-br ${rankGradient} bg-clip-text text-transparent`}>
+            {rank}
+          </span>
+          <span className="text-sm font-bold text-slate-500 mt-3 tracking-widest">RANK</span>
+        </div>
+
+        {/* Score */}
+        <div className={`text-center transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="text-4xl md:text-5xl font-black text-white">
+            {score}<span className="text-lg font-normal text-slate-500 ml-1">点</span>
+          </div>
+          <div className="text-slate-400 text-sm mt-2 flex items-center justify-center gap-2">
+            <Check className="w-4 h-4 text-emerald-400" />
+            {correctCount} / {results.length} 正解
+          </div>
+        </div>
       </div>
 
-      {/* Score - 余白拡大 */}
-      <div className={`text-center mb-10 z-10 transition-all duration-500 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <div className="text-5xl md:text-6xl font-black text-white">
-          {score}<span className="text-xl font-normal text-slate-500 ml-1">点</span>
-        </div>
-        <div className="text-slate-400 text-base mt-4 flex items-center justify-center gap-2">
-          <Check className="w-4 h-4 text-emerald-400" />
-          {correctCount} / {results.length} 正解
-        </div>
-      </div>
+      {/* Results List - flex-1で残りスペースを使用 */}
+      <div className={`flex-1 w-full px-6 overflow-y-auto z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
+          <div className="flex flex-col gap-3">
+            {results.map((r, i) => (
+              <div key={i} className="relative flex justify-between items-center p-4 bg-slate-900/60 rounded-lg border border-slate-700/30 overflow-hidden">
+                {/* 左端のアクセントライン */}
+                <div className={`absolute left-0 top-0 bottom-0 w-1 ${r.isCorrect ? 'bg-teal-500' : 'bg-rose-500/80'}`} />
 
-      {/* Results List - 5問をバランスよく表示 */}
-      <div className={`w-full bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-slate-700/50 z-10 transition-all duration-500 delay-400 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="space-y-0">
-          {results.map((r, i) => (
-            <div key={i} className="flex justify-between items-center py-5 border-b border-slate-700/30 last:border-0">
-              <div className="flex items-center gap-5 overflow-hidden">
-                <div className={`w-9 h-9 rotate-45 flex items-center justify-center shrink-0 ${r.isCorrect ? 'bg-emerald-500/30' : 'bg-rose-500/30'}`}>
-                  <div className="-rotate-45">
-                    {r.isCorrect ? <Check className="w-5 h-5 text-emerald-400" /> : <X className="w-5 h-5 text-rose-400" />}
-                  </div>
+                <div className="flex items-center gap-4 pl-3 overflow-hidden">
+                  {/* 問題番号 */}
+                  <span className="text-xs font-mono text-slate-500 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                  {/* 計算式 */}
+                  <div className="text-sm leading-relaxed"><MathRenderer node={r.display} /></div>
                 </div>
-                <div className="text-base leading-relaxed"><MathRenderer node={r.display} /></div>
+
+                <div className="flex items-center gap-3 shrink-0 ml-2">
+                  {r.isCorrect ? (
+                    <span className="text-xs text-teal-400 font-medium">Correct</span>
+                  ) : (
+                    <span className="text-xs text-rose-400 bg-rose-500/20 px-2 py-1 rounded font-medium border border-rose-500/30">{r.correctAns}</span>
+                  )}
+                </div>
               </div>
-              {!r.isCorrect && <span className="text-xs text-rose-400 bg-rose-500/20 px-3 py-2 rounded-lg shrink-0 ml-4 font-medium border border-rose-500/30">{r.correctAns}</span>}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Action Buttons - 余白拡大 */}
-      <div className={`w-full space-y-5 mt-auto z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      {/* Action Buttons - shrink-0で潰れ防止 */}
+      <div className={`shrink-0 w-full px-8 pb-10 pt-4 z-10 transition-all duration-500 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className="space-y-4">
         <button
           onClick={onRetry}
           className="w-full py-5 md:py-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold shadow-xl shadow-teal-500/30 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-3"
@@ -973,6 +972,7 @@ const ResultScreen = ({ results, onHome, onRetry }) => {
         >
           ホームへ戻る
         </button>
+        </div>
       </div>
     </div>
   );
